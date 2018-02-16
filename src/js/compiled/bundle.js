@@ -70,6 +70,18 @@
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _canvas_class = __webpack_require__(1);
+
+var _canvas_class2 = _interopRequireDefault(_canvas_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// Class of Canvas element
+
 var buttons = document.querySelector("#paint");
 
 buttons.addEventListener("click", function (e) {
@@ -86,41 +98,111 @@ buttons.addEventListener("click", function (e) {
 });
 
 var menu = document.querySelector(".menu");
-var canvas = document.querySelector("#canvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight - menu.offsetHeight;
-var ctx = canvas.getContext('2d');
+var workSpaceWidth = window.innerWidth;
+var workSpaceHeight = window.innerHeight - menu.offsetHeight;
 
-var isDrawing = false;
-var lastX = 0;
-var lastY = 0;
+var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
 
-function draw(e) {
-	if (!isDrawing) return;
+var DrawTools = function () {
+	function DrawTools() {
+		_classCallCheck(this, DrawTools);
+	}
 
-	ctx.fillStyle = '#000000';
-	ctx.lineJoin = 'round';
+	_createClass(DrawTools, [{
+		key: "use",
+		value: function use() {}
+	}]);
 
-	ctx.beginPath();
-	ctx.moveTo(lastX, lastY);
-	ctx.lineTo(e.offsetX, e.offsetY);
-	ctx.stroke();
-	lastX = e.offsetX;
-	lastY = e.offsetY;
-}
+	return DrawTools;
+}();
 
-canvas.addEventListener("mousemove", draw);
-canvas.addEventListener("mousedown", function (e) {
-	lastX = e.offsetX;
-	lastY = e.offsetY;
-	isDrawing = true;
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
 });
-canvas.addEventListener("mouseup", function () {
-	return isDrawing = false;
-});
-canvas.addEventListener("mouseout", function () {
-	return isDrawing = false;
-});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Canvas = function () {
+	function Canvas(canvasElement, width, height) {
+		_classCallCheck(this, Canvas);
+
+		// creating canvas object, needed arguments (1. selector of canvas element, 2. width, 3. height)
+		this.canvasArea = document.querySelector(canvasElement);
+		this.canvasArea.width = width;
+		this.canvasArea.height = height;
+		this.ctx = this.canvasArea.getContext('2d');
+		this.isDrawing = false;
+		this.lastX = 0;
+		this.lastY = 0;
+		this.drawProperties = {
+			color: '#000000',
+			width: '10',
+			style: 'round'
+		};
+		this._initEvents();
+	}
+
+	_createClass(Canvas, [{
+		key: 'changeProperties',
+		value: function changeProperties(properties) {
+			// Function to change drawing properies (), OBJECT AS ARGUMENT OF FUNCTION
+			this.drawProperties = _extends({}, this.drawProperties, properties);
+		}
+	}, {
+		key: '_draw',
+		value: function _draw(e) {
+			if (!this.isDrawing) return;
+
+			this.ctx.strokeStyle = this.drawProperties.color;
+			this.ctx.lineJoin = 'round';
+			this.ctx.lineCap = this.drawProperties.style;
+			this.ctx.lineWidth = this.drawProperties.width;
+
+			this.ctx.beginPath();
+			this.ctx.moveTo(this.lastX, this.lastY);
+			this.ctx.lineTo(e.offsetX, e.offsetY);
+			this.ctx.stroke();
+			this.lastX = e.offsetX;
+			this.lastY = e.offsetY;
+		}
+	}, {
+		key: '_initEvents',
+		value: function _initEvents() {
+			var _this = this;
+
+			this.canvasArea.addEventListener("mousemove", function (e) {
+				_this._draw(e);
+			});
+			this.canvasArea.addEventListener("mousedown", function (e) {
+				_this.isDrawing = true;
+				_this.lastX = e.offsetX;
+				_this.lastY = e.offsetY;
+				_this._draw(e);
+			});
+			this.canvasArea.addEventListener("mouseup", function () {
+				return _this.isDrawing = false;
+			});
+			this.canvasArea.addEventListener("mouseout", function () {
+				return _this.isDrawing = false;
+			});
+		}
+	}]);
+
+	return Canvas;
+}();
+
+exports.default = Canvas;
 
 /***/ })
 /******/ ]);

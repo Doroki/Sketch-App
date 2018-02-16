@@ -1,6 +1,6 @@
+import Canvas from "./canvas_class.js"; // Class of Canvas element
+
 const buttons = document.querySelector("#paint");
-
-
 
 buttons.addEventListener("click", function(e){
 	if(e.target.classList.contains("menu__button")) {
@@ -15,35 +15,21 @@ buttons.addEventListener("click", function(e){
 	}
 });
 
+
 const menu = document.querySelector(".menu");
-const canvas = document.querySelector("#canvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight - menu.offsetHeight;
-const ctx = canvas.getContext('2d');
+const workSpaceWidth = window.innerWidth;
+const workSpaceHeight = window.innerHeight - menu.offsetHeight;
 
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
+const Sketch = new Canvas("#canvas", workSpaceWidth, workSpaceHeight);
 
-function draw(e){
-	if(!isDrawing) return;
 
-	ctx.fillStyle = '#000000';
-	ctx.lineJoin = 'round';
-	
-	ctx.beginPath();
-	ctx.moveTo(lastX, lastY);
-	ctx.lineTo(e.offsetX, e.offsetY);
-	ctx.stroke();
-	lastX = e.offsetX;
-	lastY = e.offsetY;
+
+class DrawTools {
+	constructor() {
+
+	}
+
+	use() {
+
+	}
 }
-	
-canvas.addEventListener("mousemove", draw);
-canvas.addEventListener("mousedown", (e) => {
-	lastX = e.offsetX;
-	lastY = e.offsetY;
-	isDrawing = true;
-});
-canvas.addEventListener("mouseup", () => isDrawing = false);
-canvas.addEventListener("mouseout", () => isDrawing = false);
