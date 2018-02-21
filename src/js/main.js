@@ -1,22 +1,8 @@
 import Canvas from "./canvas_class.js"; // Class of Canvas element
-
-const buttons = document.querySelector("#paint");
-
-buttons.addEventListener("click", function(e){
-	if(e.target.classList.contains("menu__button")) {
-		
-		e.target.classList.toggle("menu__button--active");
-		
-		Array.prototype.forEach.call(buttons.children, function(element) {
-			if(!(element.classList.contains("menu__button--active"))){
-				element.classList.remove("menu__button--active");
-			} 
-		});
-	}
-});
-
+import Tool from "./tools_module.js"; // Class of Canvas element
 
 const menu = document.querySelector(".menu");
+const canvasElement = document.querySelector("#canvas");
 const workSpaceWidth = window.innerWidth;
 const workSpaceHeight = window.innerHeight - menu.offsetHeight;
 
@@ -24,12 +10,17 @@ const Sketch = new Canvas("#canvas", workSpaceWidth, workSpaceHeight);
 
 
 
-class DrawTools {
-	constructor() {
+const ColorPicker = new Tool('#Color-Picker', '../my-icons-collection/svg/001-color-picker.png');
+ColorPicker.checkColor = function(e) {
+	
+	// // const readColor = Sketch.ctx.getImageData(e.offsetX, e.offsetY, 1, 1);
+	// // console.log(readColor);	
+	// var imgData = Sketch.ctx.getImageData(e.offsetX, e.offsetY, 1, 1),
+    // red = imgData.data[0],
+    // green = imgData.data[1],
+    // blue = imgData.data[2],
+    // alpha = imgData.data[3];
+    // console.log(red + " " + green + " " + blue + " " + alpha); 
+};
 
-	}
-
-	use() {
-
-	}
-}
+canvasElement.addEventListener("click", ColorPicker.checkColor);

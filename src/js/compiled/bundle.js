@@ -70,51 +70,40 @@
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _canvas_class = __webpack_require__(1);
 
 var _canvas_class2 = _interopRequireDefault(_canvas_class);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _tools_module = __webpack_require__(2);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _tools_module2 = _interopRequireDefault(_tools_module);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Class of Canvas element
 
-var buttons = document.querySelector("#paint");
+var menu = document.querySelector(".menu"); // Class of Canvas element
 
-buttons.addEventListener("click", function (e) {
-	if (e.target.classList.contains("menu__button")) {
-
-		e.target.classList.toggle("menu__button--active");
-
-		Array.prototype.forEach.call(buttons.children, function (element) {
-			if (!element.classList.contains("menu__button--active")) {
-				element.classList.remove("menu__button--active");
-			}
-		});
-	}
-});
-
-var menu = document.querySelector(".menu");
+var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
 
 var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
 
-var DrawTools = function () {
-	function DrawTools() {
-		_classCallCheck(this, DrawTools);
-	}
+var ColorPicker = new _tools_module2.default('#Color-Picker', '../my-icons-collection/svg/001-color-picker.png');
+ColorPicker.checkColor = function (e) {
 
-	_createClass(DrawTools, [{
-		key: "use",
-		value: function use() {}
-	}]);
+   // // const readColor = Sketch.ctx.getImageData(e.offsetX, e.offsetY, 1, 1);
+   // // console.log(readColor);	
+   // var imgData = Sketch.ctx.getImageData(e.offsetX, e.offsetY, 1, 1),
+   // red = imgData.data[0],
+   // green = imgData.data[1],
+   // blue = imgData.data[2],
+   // alpha = imgData.data[3];
+   // console.log(red + " " + green + " " + blue + " " + alpha); 
+};
 
-	return DrawTools;
-}();
+canvasElement.addEventListener("click", ColorPicker.checkColor);
 
 /***/ }),
 /* 1 */
@@ -203,6 +192,59 @@ var Canvas = function () {
 }();
 
 exports.default = Canvas;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Tool = function () {
+    function Tool(idElement, cursorUrl) {
+        _classCallCheck(this, Tool);
+
+        this.element = document.querySelector(idElement);
+        this.cursorUrl = cursorUrl;
+        this.events();
+    }
+
+    _createClass(Tool, [{
+        key: "disableTools",
+        value: function disableTools() {
+            var activeElement = document.querySelector(".menu__button--active");
+            if (!activeElement) return;
+
+            activeElement.classList.remove("menu__button--active");
+        }
+    }, {
+        key: "useTool",
+        value: function useTool() {
+            this.element.classList.add("menu__button--active"); // set button to active
+            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
+        }
+    }, {
+        key: "events",
+        value: function events() {
+            this.element.addEventListener("click", function () {
+                this.disableTools();
+                this.useTool();
+            }.bind(this));
+        }
+    }]);
+
+    return Tool;
+}();
+
+exports.default = Tool;
 
 /***/ })
 /******/ ]);
