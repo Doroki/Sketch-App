@@ -54,12 +54,16 @@ input {
   outline: none; }
 
 /*=====  End of Reset CSS  ======*/
+:root {
+  --canvas-cursor: default; }
+
 html,
 body {
   height: 100%; }
 
 body {
-  background-color: #eceff1; }
+  background-color: #fff;
+  overflow: hidden; }
 
 .menu {
   display: -webkit-box;
@@ -158,3 +162,6 @@ body {
   border: 5px solid #fff;
   border-radius: 5px;
   background-color: red; }
+
+.canvas {
+  cursor: var(--canvas-cursor); }
