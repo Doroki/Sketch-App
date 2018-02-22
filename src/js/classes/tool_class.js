@@ -6,22 +6,22 @@ class Tool {
         this.events();
     }
 
-    disableTools() {
-        let activeElement = document.querySelector(".menu__button--active");
-        if(!activeElement) return;
+    // disableButton() {
+    //     let activeElement = document.querySelector(".menu__button--active");
+    //     if(!activeElement) return;
         
-        activeElement.classList.remove("menu__button--active");
-    }
+    //     activeElement.classList.remove("menu__button--active");
+    // }
 
-    useTool() {
+    activeButton() {
         this.element.classList.add("menu__button--active"); // set button to active
         document.querySelector(":root").style.setProperty("--canvas-cursor", `url(${this.cursorUrl}), auto`)// change cursor
     };
 
     events() {
         this.element.addEventListener("click", function() {
-            this.disableTools();
-            this.useTool();
+            // this.disableButton();
+            this.activeButton();
         }.bind(this));
     }     
 }

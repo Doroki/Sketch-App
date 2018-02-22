@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,43 +70,134 @@
 "use strict";
 
 
-var _canvas_class = __webpack_require__(1);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Tool = function () {
+    function Tool(idElement, cursorUrl) {
+        _classCallCheck(this, Tool);
+
+        this.element = document.querySelector(idElement);
+        this.cursorUrl = cursorUrl;
+        this.events();
+    }
+
+    // disableButton() {
+    //     let activeElement = document.querySelector(".menu__button--active");
+    //     if(!activeElement) return;
+
+    //     activeElement.classList.remove("menu__button--active");
+    // }
+
+    _createClass(Tool, [{
+        key: "activeButton",
+        value: function activeButton() {
+            this.element.classList.add("menu__button--active"); // set button to active
+            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
+        }
+    }, {
+        key: "events",
+        value: function events() {
+            this.element.addEventListener("click", function () {
+                // this.disableButton();
+                this.activeButton();
+            }.bind(this));
+        }
+    }]);
+
+    return Tool;
+}();
+
+exports.default = Tool;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _canvas_class = __webpack_require__(2);
 
 var _canvas_class2 = _interopRequireDefault(_canvas_class);
 
-var _tools_module = __webpack_require__(2);
+var _brush = __webpack_require__(3);
 
-var _tools_module2 = _interopRequireDefault(_tools_module);
+var _brush2 = _interopRequireDefault(_brush);
+
+var _easer = __webpack_require__(4);
+
+var _easer2 = _interopRequireDefault(_easer);
+
+var _spray = __webpack_require__(5);
+
+var _spray2 = _interopRequireDefault(_spray);
+
+var _color_picker = __webpack_require__(6);
+
+var _color_picker2 = _interopRequireDefault(_color_picker);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Class of Canvas element
 
-var menu = document.querySelector(".menu"); // Class of Canvas element
-
-var canvasElement = document.querySelector("#canvas");
+var menu = document.querySelector(".menu");
+var canvas = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
+var toolColor = document.querySelector("#color-field");
+var toolSize = document.querySelector("#tool-size");
+
+var toolSet = {
+	"Brush": _brush2.default,
+	"Easer": _easer2.default,
+	"Color-Picker": _color_picker2.default,
+	"Spray": _spray2.default
+};
 
 var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
 
-var ColorPicker = new _tools_module2.default('#Color-Picker', '../my-icons-collection/svg/001-color-picker.png');
-ColorPicker.checkColor = function (e) {
+function inactiveButton(nodeList) {
+	Array.prototype.forEach.call(nodeList, function (element) {
+		element.dataset.usage = "false";
+		element.classList.remove("menu__button--active");
+		canvas.removeEventListener("click", toolSet[element.id].use);
+	});
+}
 
-   // // const readColor = Sketch.ctx.getImageData(e.offsetX, e.offsetY, 1, 1);
-   // // console.log(readColor);	
-   // var imgData = Sketch.ctx.getImageData(e.offsetX, e.offsetY, 1, 1),
-   // red = imgData.data[0],
-   // green = imgData.data[1],
-   // blue = imgData.data[2],
-   // alpha = imgData.data[3];
-   // console.log(red + " " + green + " " + blue + " " + alpha); 
-};
+function changeColor() {
+	Sketch.changeProperties({ color: toolColor.value });
+}
 
-canvasElement.addEventListener("click", ColorPicker.checkColor);
+function changeToolSize() {
+	Sketch.changeProperties({ width: toolSize.value });
+}
+
+function changeFontSize() {}
+
+menu.addEventListener("click", function (e) {
+
+	var elementToUse = e.target;
+	var elementUsage = elementToUse.dataset.usage;
+
+	if (elementUsage === "true") return;
+
+	inactiveButton(document.querySelectorAll("[data-usage=true]"));
+
+	elementToUse.dataset.usage = "true";
+	toolSet[elementToUse.id].use(e, Sketch);
+});
+
+toolSize.addEventListener("change", changeToolSize);
+toolColor.addEventListener("change", changeColor);
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -119,6 +210,8 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -135,17 +228,19 @@ var Canvas = function () {
 		this.lastX = 0;
 		this.lastY = 0;
 		this.drawProperties = {
-			color: '#000000',
+			drawStyle: "line",
+			color: '#cccccc',
 			width: '10',
-			style: 'round'
+			style: 'round',
+			rect: null
 		};
-		this._initEvents();
+		this._initEvents(this.drawProperties.drawStyle);
 	}
 
 	_createClass(Canvas, [{
 		key: 'changeProperties',
 		value: function changeProperties(properties) {
-			// Function to change drawing properies (), OBJECT AS ARGUMENT OF FUNCTION
+			// Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
 			this.drawProperties = _extends({}, this.drawProperties, properties);
 		}
 	}, {
@@ -159,16 +254,26 @@ var Canvas = function () {
 			this.ctx.lineWidth = this.drawProperties.width;
 
 			this.ctx.beginPath();
-			this.ctx.moveTo(this.lastX, this.lastY);
-			this.ctx.lineTo(e.offsetX, e.offsetY);
+
+			if (this.drawProperties.drawStyle === "line") {
+				this.ctx.moveTo(this.lastX, this.lastY);
+				this.ctx.lineTo(e.offsetX, e.offsetY);
+			} else if (this.drawProperties.drawStyle === "rect") {
+				var _ctx;
+
+				(_ctx = this.ctx).fillRect.apply(_ctx, _toConsumableArray(this.drawProperties.rect(e)));
+			}
+
 			this.ctx.stroke();
 			this.lastX = e.offsetX;
 			this.lastY = e.offsetY;
 		}
 	}, {
 		key: '_initEvents',
-		value: function _initEvents() {
+		value: function _initEvents(action) {
 			var _this = this;
+
+			if (action === "pickColor") return;
 
 			this.canvasArea.addEventListener("mousemove", function (e) {
 				_this._draw(e);
@@ -194,7 +299,7 @@ var Canvas = function () {
 exports.default = Canvas;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -204,47 +309,149 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _tool_class = __webpack_require__(0);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _tool_class2 = _interopRequireDefault(_tool_class);
 
-var Tool = function () {
-    function Tool(idElement, cursorUrl) {
-        _classCallCheck(this, Tool);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-        this.element = document.querySelector(idElement);
-        this.cursorUrl = cursorUrl;
-        this.events();
+// Class of tools
+
+var Brush = new _tool_class2.default('#Brush', '../my-icons-collection/svg/001-color-picker.png');
+
+Brush.use = function (e, canvas) {
+    var paintColor = document.querySelector("[type=color]").value;
+    canvas.changeProperties({ color: paintColor, drawStyle: "line" });
+    document.querySelector("#color-field").disabled = false;
+};
+
+exports.default = Brush;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _tool_class = __webpack_require__(0);
+
+var _tool_class2 = _interopRequireDefault(_tool_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Class of tools
+
+var Easer = new _tool_class2.default('#Easer', '../my-icons-collection/svg/001-color-picker.png');
+
+Easer.use = function (e, canvas) {
+    canvas.changeProperties({ drawStyle: "line", color: "#ffffff" });
+    document.querySelector("#color-field").disabled = true;
+};
+
+exports.default = Easer;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _tool_class = __webpack_require__(0);
+
+var _tool_class2 = _interopRequireDefault(_tool_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Class of tools
+
+var Spray = new _tool_class2.default('#Brush', '../my-icons-collection/svg/001-color-picker.png');
+
+Spray.getRandomPosition = function (paintWidth) {
+    var randomAngle = Math.random() * 360;
+    var randomRadius = Math.random() * paintWidth;
+
+    return {
+        angle: Math.cos(randomAngle) * randomRadius,
+        radius: Math.sin(randomAngle) * randomRadius
+    };
+};
+
+Spray.paint = function (e, paintWidth) {
+
+    for (var i = 0; i < 50; i++) {
+        var offset = Spray.getRandomPosition(paintWidth);
+        var x = e.offsetX + offset.angle,
+            y = e.offsetY + offset.radius;
+
+        // const pleceToDraw = [x, y, 1, 1];
+        return [x, y, 1, 1];
+
+        // Sketch.changeProperties({drawStyle: "rect", rect: pleceToDraw});
     }
+};
 
-    _createClass(Tool, [{
-        key: "disableTools",
-        value: function disableTools() {
-            var activeElement = document.querySelector(".menu__button--active");
-            if (!activeElement) return;
+Spray.use = function (e, canvasCtx, paintWidth) {
 
-            activeElement.classList.remove("menu__button--active");
-        }
-    }, {
-        key: "useTool",
-        value: function useTool() {
-            this.element.classList.add("menu__button--active"); // set button to active
-            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
-        }
-    }, {
-        key: "events",
-        value: function events() {
-            this.element.addEventListener("click", function () {
-                this.disableTools();
-                this.useTool();
-            }.bind(this));
-        }
-    }]);
+    canvasCtx.changeProperties({ drawStyle: "rect", rect: function rect(e, paintWidth) {
+            Spray.paint(e, paintWidth);
+        } });
+    // setInterval(this.paint(e, Sketch, paintWidth), 16);
+};
 
-    return Tool;
-}();
+exports.default = Spray;
 
-exports.default = Tool;
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _tool_class = __webpack_require__(0);
+
+var _tool_class2 = _interopRequireDefault(_tool_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Class of tools
+
+var ColorPicker = new _tool_class2.default('#Color-Picker', '../my-icons-collection/svg/001-color-picker.png');
+
+ColorPicker.use = function (e, canvas) {
+
+	canvas.changeProperties({ drawStyle: "pickColor" });
+	var colorData = canvas.ctx.getImageData(e.offsetX, e.offsetY, 1, 1);
+
+	var rgbColor = {
+		red: colorData.data[0],
+		green: colorData.data[1],
+		blue: colorData.data[2]
+	};
+
+	var hexColor = {
+		red: rgbColor.red.toString(16),
+		green: rgbColor.green.toString(16),
+		blue: rgbColor.blue.toString(16)
+	};
+
+	document.querySelector("#color-field").value = '#' + hexColor.red + hexColor.green + hexColor.blue;
+};
+
+exports.default = ColorPicker;
 
 /***/ })
 /******/ ]);

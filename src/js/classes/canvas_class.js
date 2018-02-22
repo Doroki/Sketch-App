@@ -9,14 +9,16 @@ class Canvas {
 		this.lastX = 0;
 		this.lastY = 0;
 		this.drawProperties = {
-			color :'#000000', 
+			drawStyle: "line",
+			color :'#cccccc', 
 			width :'10', 
-			style :'round'
+			style :'round',
+			rect: null
 		};
-		this._initEvents();
+		this._initEvents(this.drawProperties.drawStyle);
 	}
 
-	changeProperties(properties) { // Function to change drawing properies (), OBJECT AS ARGUMENT OF FUNCTION
+	changeProperties(properties) { // Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
 		this.drawProperties = {
 			...this.drawProperties,
 			...properties
@@ -25,30 +27,40 @@ class Canvas {
   
 	_draw(e) {
 	  if(!this.isDrawing) return;
-  
+
 		this.ctx.strokeStyle = this.drawProperties.color;
 		this.ctx.lineJoin = 'round';
 		this.ctx.lineCap = this.drawProperties.style;
 		this.ctx.lineWidth = this.drawProperties.width;
   
 		this.ctx.beginPath();
-		this.ctx.moveTo(this.lastX, this.lastY);
-		this.ctx.lineTo(e.offsetX, e.offsetY);
+
+		if(this.drawProperties.drawStyle === "line") {
+			this.ctx.moveTo(this.lastX, this.lastY);
+			this.ctx.lineTo(e.offsetX, e.offsetY);
+		} 
+		else if(this.drawProperties.drawStyle === "rect") {
+			this.ctx.fillRect(...this.drawProperties.rect(e)); 
+		}
+		
 		this.ctx.stroke();
 		this.lastX = e.offsetX;
 		this.lastY = e.offsetY;
 	}
+
   
-	_initEvents() {
-	   this.canvasArea.addEventListener("mousemove", (e) => {this._draw(e)});
-	   this.canvasArea.addEventListener("mousedown", (e) => {
+	_initEvents(action) {
+		if(action === "pickColor") return;
+
+	    this.canvasArea.addEventListener("mousemove", (e) => {this._draw(e)});
+	    this.canvasArea.addEventListener("mousedown", (e) => {
 			this.isDrawing = true;
 			this.lastX = e.offsetX;
 			this.lastY = e.offsetY;
 			this._draw(e);
-	   });
-	   this.canvasArea.addEventListener("mouseup", () => this.isDrawing = false);
-	   this.canvasArea.addEventListener("mouseout", () => this.isDrawing = false);
+	    });
+	    this.canvasArea.addEventListener("mouseup", () => this.isDrawing = false);
+	    this.canvasArea.addEventListener("mouseout", () => this.isDrawing = false);
 	}
   }
 
