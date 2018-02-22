@@ -17,7 +17,6 @@
         
         <div class="menu__container">
             <button class="menu__button fa fa-undo fa-2x"></button>
-             <button class="menu__button fa fa fa-font fa-2x"></button>
              <button class="menu__button fa fa-scissors fa-2x"></button>
              <button class="menu__button fa fa-repeat fa-2x"></button>
              <button class="menu__button fa-select fa-2x"></button>
@@ -25,28 +24,23 @@
         </div>
         
         <div id="paint" class="menu__container">
-             <button class="menu__button fa fa-paint-brush fa-2x"></button>
-             <button class="menu__button fa fa-shower fa-2x"></button>
-             <button class="menu__button fa fa-tint fa-2x"></button>
-             <button class="menu__button fa fa-search fa-2x"></button>
-             <button class="menu__button fa fa-eraser fa-2x"></button>
-             <button id="Color-Picker" class="menu__button fa fa-eyedropper fa-2x"></button>
+             <button id="Brush" class="menu__button fa fa-paint-brush fa-2x" data-usage="true"></button>
+             <button id="Spray" class="menu__button fa fa-shower fa-2x" data-usage="false"></button>
+             <button id="Text" class="menu__button fa fa fa-font fa-2x" data-usage="false"></button>
+             <button id="Zoom" class="menu__button fa fa-search fa-2x" data-usage="false"></button>
+             <button id="Easer" class="menu__button fa fa-eraser fa-2x" data-usage="false"></button>
+             <button id="Color-Picker" class="menu__button fa fa-eyedropper fa-2x" data-usage="false"></button>
         </div>
     
         <div class="menu__container">
-            <label for="brush-size" class="menu__size fa fa-paint-brush fa-2x">
-                <input id="brush-size" type="number" value="10" min="1" max="100">		
+            <label for="tool-size" class="menu__size fa fa-paint-brush fa-2x">
+                <input id="tool-size" type="number" value="10" min="1" max="100">		
             </label>
-            <label for="brush-size" class="menu__size fa fa-font fa-2x">
-                <input id="brush-size" type="number" value="12" min="1" max="100">		
+            <label for="font-size" class="menu__size fa fa-font fa-2x">
+                <input id="font-size" type="number" value="12" min="1" max="100">		
             </label>
-        </div>
-            
-        <div class="menu__container">
-            <input type="color" class="">
-            <input type="color">
-        </div>
-            
+            <input type="color" id="color-field" class="">
+        </div> 
     </section>
     
     <canvas id="canvas" class="canvas" width="600px" height="300px">
