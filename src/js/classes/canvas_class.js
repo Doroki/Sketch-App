@@ -10,12 +10,13 @@ class Canvas {
 		this.lastY = 0;
 		this.drawProperties = {
 			drawStyle: "line",
-			color :'#cccccc', 
+			color :'#000000', 
 			width :'10', 
 			style :'round',
 			rect: null
 		};
-		this._initEvents(this.drawProperties.drawStyle);
+
+		this.initEvents();
 	}
 
 	changeProperties(properties) { // Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
@@ -33,6 +34,8 @@ class Canvas {
 		this.ctx.lineCap = this.drawProperties.style;
 		this.ctx.lineWidth = this.drawProperties.width;
   
+		if(this.drawProperties.drawStyle === "none") return;
+
 		this.ctx.beginPath();
 
 		if(this.drawProperties.drawStyle === "line") {
@@ -49,18 +52,17 @@ class Canvas {
 	}
 
   
-	_initEvents(action) {
-		if(action === "pickColor") return;
+	initEvents() {;
 
-	    this.canvasArea.addEventListener("mousemove", (e) => {this._draw(e)});
-	    this.canvasArea.addEventListener("mousedown", (e) => {
-			this.isDrawing = true;
-			this.lastX = e.offsetX;
-			this.lastY = e.offsetY;
-			this._draw(e);
-	    });
-	    this.canvasArea.addEventListener("mouseup", () => this.isDrawing = false);
-	    this.canvasArea.addEventListener("mouseout", () => this.isDrawing = false);
+	   this.canvasArea.addEventListener("mousemove", (e) => {this._draw(e)});
+	   this.canvasArea.addEventListener("mousedown", (e) => {
+				this.isDrawing = true;
+				this.lastX = e.offsetX;
+				this.lastY = e.offsetY;
+				this._draw(e);
+	   });
+	   this.canvasArea.addEventListener("mouseup", () => this.isDrawing = false);
+	   this.canvasArea.addEventListener("mouseout", () => this.isDrawing = false);
 	}
   }
 

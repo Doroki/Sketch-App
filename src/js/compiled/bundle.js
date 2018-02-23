@@ -84,29 +84,20 @@ var Tool = function () {
 
         this.element = document.querySelector(idElement);
         this.cursorUrl = cursorUrl;
-        this.events();
     }
 
-    // disableButton() {
-    //     let activeElement = document.querySelector(".menu__button--active");
-    //     if(!activeElement) return;
-
-    //     activeElement.classList.remove("menu__button--active");
-    // }
-
     _createClass(Tool, [{
-        key: "activeButton",
-        value: function activeButton() {
-            this.element.classList.add("menu__button--active"); // set button to active
-            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
+        key: "disableButton",
+        value: function disableButton() {
+            this.element.classList.remove("menu__button--active");
+            this.element.dataset.usage = "false";
         }
     }, {
-        key: "events",
-        value: function events() {
-            this.element.addEventListener("click", function () {
-                // this.disableButton();
-                this.activeButton();
-            }.bind(this));
+        key: "enableButton",
+        value: function enableButton() {
+            this.element.classList.add("menu__button--active"); // set button to active
+            this.element.dataset.usage = "true";
+            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
         }
     }]);
 
@@ -144,10 +135,12 @@ var _color_picker2 = _interopRequireDefault(_color_picker);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//////////
+
 // Class of Canvas element
 
 var menu = document.querySelector(".menu");
-var canvas = document.querySelector("#canvas");
+var canvass = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
 var toolColor = document.querySelector("#color-field");
@@ -158,17 +151,39 @@ var toolSet = {
 	"Easer": _easer2.default,
 	"Color-Picker": _color_picker2.default,
 	"Spray": _spray2.default
-};
 
-var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
+	///////////////
 
-function inactiveButton(nodeList) {
-	Array.prototype.forEach.call(nodeList, function (element) {
-		element.dataset.usage = "false";
-		element.classList.remove("menu__button--active");
-		canvas.removeEventListener("click", toolSet[element.id].use);
-	});
+};var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
+
+function disableButton(e, canvas) {
+	var buttonID = document.querySelector("[data-usage=true]").id;
+	var toolToDisable = toolSet[buttonID];
+
+	toolToDisable.disableButton();
+	toolToDisable.inactive(e, canvas);
 }
+
+function enableButton(e, canvas) {
+	var buttonID = e.target.id;
+	var toolToActive = toolSet[buttonID];
+
+	toolToActive.enableButton();
+	toolToActive.active(e, canvas);
+}
+
+function useButton(e) {
+	disableButton(e, Sketch);
+	enableButton(e, Sketch);
+}
+
+menu.addEventListener("click", function (e) {
+	if (e.target.hasAttribute("data-usage")) {
+		useButton(e);
+	}
+});
+
+/////////////////////////////////////////////////
 
 function changeColor() {
 	Sketch.changeProperties({ color: toolColor.value });
@@ -180,18 +195,7 @@ function changeToolSize() {
 
 function changeFontSize() {}
 
-menu.addEventListener("click", function (e) {
-
-	var elementToUse = e.target;
-	var elementUsage = elementToUse.dataset.usage;
-
-	if (elementUsage === "true") return;
-
-	inactiveButton(document.querySelectorAll("[data-usage=true]"));
-
-	elementToUse.dataset.usage = "true";
-	toolSet[elementToUse.id].use(e, Sketch);
-});
+/////////
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
@@ -229,12 +233,13 @@ var Canvas = function () {
 		this.lastY = 0;
 		this.drawProperties = {
 			drawStyle: "line",
-			color: '#cccccc',
+			color: '#000000',
 			width: '10',
 			style: 'round',
 			rect: null
 		};
-		this._initEvents(this.drawProperties.drawStyle);
+
+		this.initEvents();
 	}
 
 	_createClass(Canvas, [{
@@ -253,6 +258,8 @@ var Canvas = function () {
 			this.ctx.lineCap = this.drawProperties.style;
 			this.ctx.lineWidth = this.drawProperties.width;
 
+			if (this.drawProperties.drawStyle === "none") return;
+
 			this.ctx.beginPath();
 
 			if (this.drawProperties.drawStyle === "line") {
@@ -269,11 +276,11 @@ var Canvas = function () {
 			this.lastY = e.offsetY;
 		}
 	}, {
-		key: '_initEvents',
-		value: function _initEvents(action) {
+		key: 'initEvents',
+		value: function initEvents() {
 			var _this = this;
 
-			if (action === "pickColor") return;
+			;
 
 			this.canvasArea.addEventListener("mousemove", function (e) {
 				_this._draw(e);
@@ -319,11 +326,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Brush = new _tool_class2.default('#Brush', '../my-icons-collection/svg/001-color-picker.png');
 
-Brush.use = function (e, canvas) {
+Brush.active = function (e, canvas) {
+
     var paintColor = document.querySelector("[type=color]").value;
     canvas.changeProperties({ color: paintColor, drawStyle: "line" });
-    document.querySelector("#color-field").disabled = false;
 };
+
+Brush.inactive = function (e, canvas) {};
 
 exports.default = Brush;
 
@@ -348,9 +357,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Easer = new _tool_class2.default('#Easer', '../my-icons-collection/svg/001-color-picker.png');
 
-Easer.use = function (e, canvas) {
+Easer.active = function (e, canvas) {
+
     canvas.changeProperties({ drawStyle: "line", color: "#ffffff" });
     document.querySelector("#color-field").disabled = true;
+};
+
+Easer.inactive = function (e, canvas) {
+    document.querySelector("#color-field").disabled = false;
 };
 
 exports.default = Easer;
@@ -431,9 +445,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var ColorPicker = new _tool_class2.default('#Color-Picker', '../my-icons-collection/svg/001-color-picker.png');
 
-ColorPicker.use = function (e, canvas) {
+ColorPicker.checkColor = function (e, canvas) {
 
-	canvas.changeProperties({ drawStyle: "pickColor" });
 	var colorData = canvas.ctx.getImageData(e.offsetX, e.offsetY, 1, 1);
 
 	var rgbColor = {
@@ -448,7 +461,24 @@ ColorPicker.use = function (e, canvas) {
 		blue: rgbColor.blue.toString(16)
 	};
 
+	console.log(hexColor);
+
 	document.querySelector("#color-field").value = '#' + hexColor.red + hexColor.green + hexColor.blue;
+};
+
+ColorPicker.active = function (e, canvas) {
+
+	ColorPicker.eventHandler; // created to make possiable to remove Event Listener
+
+	canvas.changeProperties({ drawStyle: "none" });
+
+	document.querySelector("#canvas").addEventListener("click", ColorPicker.eventHandler = function (event) {
+		ColorPicker.checkColor(event, canvas);
+	});
+};
+
+ColorPicker.inactive = function (e, canvas) {
+	document.querySelector("#canvas").removeEventListener("click", ColorPicker.eventHandler);
 };
 
 exports.default = ColorPicker;
