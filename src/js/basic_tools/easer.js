@@ -6,10 +6,12 @@ Easer.active = function(e, canvas) {
 
     canvas.changeProperties({drawStyle: "line", color: "#ffffff"});
     document.querySelector("#color-field").disabled = true;
+    canvas.bindEvents();
 }
 
 Easer.inactive = function(e, canvas) {
     document.querySelector("#color-field").disabled = false;
+    canvas.unbindEvents();
 }
 
 export default Easer;

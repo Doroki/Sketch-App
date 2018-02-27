@@ -7,10 +7,11 @@ Brush.active = function(e, canvas) {
 
     let paintColor = document.querySelector("[type=color]").value;
     canvas.changeProperties({color: paintColor, drawStyle: "line"});
+    canvas.bindEvents();
 }
 
 Brush.inactive = function(e, canvas) {
-    
+    canvas.unbindEvents();
 }
 
 export default Brush;

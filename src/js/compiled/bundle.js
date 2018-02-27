@@ -215,8 +215,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Canvas = function () {
@@ -228,75 +226,91 @@ var Canvas = function () {
 		this.canvasArea.width = width;
 		this.canvasArea.height = height;
 		this.ctx = this.canvasArea.getContext('2d');
+		this.ctx.fillStyle = "#ffffff";
+		this.ctx.fillRect(0, 0, width, height);
+
 		this.isDrawing = false;
 		this.lastX = 0;
 		this.lastY = 0;
+
+		//////// DRAW PROPERTIES /////////
 		this.drawProperties = {
 			drawStyle: "line",
 			color: '#000000',
 			width: '10',
-			style: 'round',
-			rect: null
+			style: 'round'
 		};
 
-		this.initEvents();
+		////// Event handler for unbind method /////
+		this.mouseEventHandler = {
+			move: null,
+			down: null,
+			up: null,
+			out: null
+		};
+
+		//// properties to use for new methods of draw ///
+		this.drawMethod = null;
 	}
 
 	_createClass(Canvas, [{
-		key: 'changeProperties',
+		key: "changeProperties",
 		value: function changeProperties(properties) {
 			// Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
 			this.drawProperties = _extends({}, this.drawProperties, properties);
 		}
 	}, {
-		key: '_draw',
-		value: function _draw(e) {
+		key: "draw",
+		value: function draw(e) {
 			if (!this.isDrawing) return;
 
 			this.ctx.strokeStyle = this.drawProperties.color;
+			this.ctx.fillStyle = this.drawProperties.color;
 			this.ctx.lineJoin = 'round';
 			this.ctx.lineCap = this.drawProperties.style;
 			this.ctx.lineWidth = this.drawProperties.width;
 
-			if (this.drawProperties.drawStyle === "none") return;
-
-			this.ctx.beginPath();
-
-			if (this.drawProperties.drawStyle === "line") {
+			if (typeof this.drawMethod !== "function") {
+				// Default settings of draw, useing for Brush or Easer
+				this.ctx.beginPath();
 				this.ctx.moveTo(this.lastX, this.lastY);
 				this.ctx.lineTo(e.offsetX, e.offsetY);
-			} else if (this.drawProperties.drawStyle === "rect") {
-				var _ctx;
-
-				(_ctx = this.ctx).fillRect.apply(_ctx, _toConsumableArray(this.drawProperties.rect(e)));
+				this.ctx.stroke();
+			} else {
+				this.drawMethod(e, this); // Other draw methods implemented from tools
 			}
 
-			this.ctx.stroke();
 			this.lastX = e.offsetX;
 			this.lastY = e.offsetY;
 		}
 	}, {
-		key: 'initEvents',
-		value: function initEvents() {
+		key: "bindEvents",
+		value: function bindEvents() {
 			var _this = this;
 
-			;
-
-			this.canvasArea.addEventListener("mousemove", function (e) {
-				_this._draw(e);
+			this.canvasArea.addEventListener("mousemove", this.mouseEventHandler.move = function (e) {
+				_this.draw(e);
 			});
-			this.canvasArea.addEventListener("mousedown", function (e) {
+			this.canvasArea.addEventListener("mousedown", this.mouseEventHandler.down = function (e) {
 				_this.isDrawing = true;
 				_this.lastX = e.offsetX;
 				_this.lastY = e.offsetY;
-				_this._draw(e);
+				_this.draw(e);
 			});
-			this.canvasArea.addEventListener("mouseup", function () {
+			this.canvasArea.addEventListener("mouseup", this.mouseEventHandler.up = function () {
 				return _this.isDrawing = false;
 			});
-			this.canvasArea.addEventListener("mouseout", function () {
+			this.canvasArea.addEventListener("mouseout", this.mouseEventHandler.out = function () {
 				return _this.isDrawing = false;
 			});
+		}
+	}, {
+		key: "unbindEvents",
+		value: function unbindEvents() {
+			this.canvasArea.removeEventListener("mousemove", this.mouseEventHandler.move);
+			this.canvasArea.removeEventListener("mousedown", this.mouseEventHandler.down);
+			this.canvasArea.removeEventListener("mouseup", this.mouseEventHandler.up);
+			this.canvasArea.removeEventListener("mouseout", this.mouseEventHandler.out);
 		}
 	}]);
 
@@ -330,9 +344,12 @@ Brush.active = function (e, canvas) {
 
     var paintColor = document.querySelector("[type=color]").value;
     canvas.changeProperties({ color: paintColor, drawStyle: "line" });
+    canvas.bindEvents();
 };
 
-Brush.inactive = function (e, canvas) {};
+Brush.inactive = function (e, canvas) {
+    canvas.unbindEvents();
+};
 
 exports.default = Brush;
 
@@ -361,10 +378,12 @@ Easer.active = function (e, canvas) {
 
     canvas.changeProperties({ drawStyle: "line", color: "#ffffff" });
     document.querySelector("#color-field").disabled = true;
+    canvas.bindEvents();
 };
 
 Easer.inactive = function (e, canvas) {
     document.querySelector("#color-field").disabled = false;
+    canvas.unbindEvents();
 };
 
 exports.default = Easer;
@@ -388,11 +407,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Class of tools
 
-var Spray = new _tool_class2.default('#Brush', '../my-icons-collection/svg/001-color-picker.png');
+var Spray = new _tool_class2.default('#Spray', '../my-icons-collection/svg/001-color-picker.png');
 
-Spray.getRandomPosition = function (paintWidth) {
+Spray.getRandomPosition = function (spraySize) {
     var randomAngle = Math.random() * 360;
-    var randomRadius = Math.random() * paintWidth;
+    var randomRadius = Math.random() * spraySize;
 
     return {
         angle: Math.cos(randomAngle) * randomRadius,
@@ -400,26 +419,31 @@ Spray.getRandomPosition = function (paintWidth) {
     };
 };
 
-Spray.paint = function (e, paintWidth) {
+Spray.paint = function (e, canvas) {
 
-    for (var i = 0; i < 50; i++) {
-        var offset = Spray.getRandomPosition(paintWidth);
-        var x = e.offsetX + offset.angle,
-            y = e.offsetY + offset.radius;
+    var spraySize = canvas.ctx.lineWidth;
+    var density = 60 * (spraySize / 10);
 
-        // const pleceToDraw = [x, y, 1, 1];
-        return [x, y, 1, 1];
+    for (var i = 0; i < density; i++) {
 
-        // Sketch.changeProperties({drawStyle: "rect", rect: pleceToDraw});
+        var offset = Spray.getRandomPosition(spraySize);
+        var x = offset.angle + e.offsetX;
+        var y = offset.radius + e.offsetY;
+
+        canvas.ctx.fillRect(x, y, 1, 1);
     }
 };
 
-Spray.use = function (e, canvasCtx, paintWidth) {
+Spray.active = function (event, canvas) {
 
-    canvasCtx.changeProperties({ drawStyle: "rect", rect: function rect(e, paintWidth) {
-            Spray.paint(e, paintWidth);
-        } });
-    // setInterval(this.paint(e, Sketch, paintWidth), 16);
+    canvas.bindEvents();
+    canvas.drawMethod = Spray.paint;
+};
+
+Spray.inactive = function (e, canvas) {
+
+    canvas.unbindEvents();
+    canvas.drawMethod = null;
 };
 
 exports.default = Spray;
@@ -468,17 +492,19 @@ ColorPicker.checkColor = function (e, canvas) {
 
 ColorPicker.active = function (e, canvas) {
 
+	canvas.unbindEvents();
+
+	var canvasArea = document.querySelector("#canvas");
 	ColorPicker.eventHandler; // created to make possiable to remove Event Listener
 
-	canvas.changeProperties({ drawStyle: "none" });
-
-	document.querySelector("#canvas").addEventListener("click", ColorPicker.eventHandler = function (event) {
+	canvasArea.addEventListener("click", ColorPicker.eventHandler = function (event) {
 		ColorPicker.checkColor(event, canvas);
 	});
 };
 
 ColorPicker.inactive = function (e, canvas) {
-	document.querySelector("#canvas").removeEventListener("click", ColorPicker.eventHandler);
+	var canvasArea = document.querySelector("#canvas");
+	canvasArea.removeEventListener("click", ColorPicker.eventHandler);
 };
 
 exports.default = ColorPicker;

@@ -25,20 +25,20 @@ ColorPicker.checkColor = function(e, canvas) {
 
 
 ColorPicker.active = function(e, canvas) {
-	
+
+	canvas.unbindEvents();
+
+	const canvasArea = document.querySelector("#canvas");
 	ColorPicker.eventHandler // created to make possiable to remove Event Listener
 
-	canvas.changeProperties({drawStyle: "none"});
-
-	document.querySelector("#canvas").addEventListener("click", ColorPicker.eventHandler = function(event){
+	canvasArea.addEventListener("click", ColorPicker.eventHandler = function(event){
 		ColorPicker.checkColor(event, canvas)
 	});
-
-	
 }
 
 ColorPicker.inactive = function(e, canvas) {
-    document.querySelector("#canvas").removeEventListener("click", ColorPicker.eventHandler);
+	const canvasArea = document.querySelector("#canvas");
+    canvasArea.removeEventListener("click", ColorPicker.eventHandler);
 }
 
 export default ColorPicker;
