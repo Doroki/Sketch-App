@@ -40,6 +40,9 @@ body {
 	}
 	
 	&__button {
+		display: flex;
+    	align-items: center;
+    	justify-content: center;
 		width: 30%;
 		height: 50px;
 		background-color: transparent;
@@ -67,6 +70,10 @@ body {
 			box-shadow: 0px 0px 4px 0px rgba(38, 50, 56, 1);
 			background-color: lighten(#cfd8dc, 3%);
 			color: #263238;
+		}
+
+		input[type="file"] {
+			display: none;
 		}
 	}
 	
