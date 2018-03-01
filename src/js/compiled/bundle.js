@@ -133,14 +133,17 @@ var _color_picker = __webpack_require__(6);
 
 var _color_picker2 = _interopRequireDefault(_color_picker);
 
+var _rect = __webpack_require__(7);
+
+var _rect2 = _interopRequireDefault(_rect);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //////////
 
-// Class of Canvas element
+var menu = document.querySelector(".menu"); // Class of Canvas element
 
-var menu = document.querySelector(".menu");
-var canvass = document.querySelector("#canvas");
+var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
 var toolColor = document.querySelector("#color-field");
@@ -150,7 +153,8 @@ var toolSet = {
 	"Brush": _brush2.default,
 	"Easer": _easer2.default,
 	"Color-Picker": _color_picker2.default,
-	"Spray": _spray2.default
+	"Spray": _spray2.default,
+	"Rect": _rect2.default
 
 	///////////////
 
@@ -199,6 +203,33 @@ function changeFontSize() {}
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
+
+function downloadCanvas(anchor, canvasElement) {
+	var fileName = "my_image.png";
+	var link = canvasElement.toDataURL();
+
+	anchor.download = fileName;
+	anchor.href = link;
+}
+
+document.getElementById("get-file").addEventListener("change", function () {
+	// const reader = new FileReader();
+	// reader.onload =  function(event) {
+	// 	console.log(event)
+	// }
+
+	var file = document.querySelector('input[type=file]').files[0];
+	var reader = new FileReader();
+
+	reader.addEventListener("load", function () {
+		console.log(reader.result);
+	}, false);
+
+	reader.readAsDataURL(file);
+	console.log(reader);
+
+	// downloadCanvas(this, 'canvas');
+});
 
 /***/ }),
 /* 2 */
@@ -422,7 +453,7 @@ Spray.getRandomPosition = function (spraySize) {
 Spray.paint = function (e, canvas) {
 
     var spraySize = canvas.ctx.lineWidth;
-    var density = 60 * (spraySize / 10);
+    var density = 60 * (spraySize / 5);
 
     for (var i = 0; i < density; i++) {
 
@@ -508,6 +539,64 @@ ColorPicker.inactive = function (e, canvas) {
 };
 
 exports.default = ColorPicker;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _tool_class = __webpack_require__(0);
+
+var _tool_class2 = _interopRequireDefault(_tool_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Class of tools
+
+var Rect = new _tool_class2.default('#Rect', '../my-icons-collection/svg/001-color-picker.png');
+
+console.log(Rect);
+
+Rect.startDrawPoints = function (event, canvas) {
+    var menuHeight = window.innerHeight - canvas.canvasArea.height;
+
+    return {
+        y: event.clientY - menuHeight,
+        x: event.clientX,
+        menuHeight: menuHeight
+    };
+};
+
+Rect.active = function (e, test) {
+    var canvas = test;
+    canvas.unbindEvents();
+
+    console.log(canvas);
+    var canvasArea = document.querySelector("#canvas");
+    Rect.eventHandler; // created to make possiable to remove Event Listener
+
+    canvasArea.addEventListener("mousedown", function (event) {
+
+        canvas.ctx.clearRect(0, 0, 50, 50);
+        var startPoint = Rect.startDrawPoints(event, canvas);
+        console.log(startPoint);
+        canvasArea.addEventListener("mousemove", function (e) {
+            canvas.ctx.rect(startPoint.x, startPoint.y, e.clientX - startPoint.x, e.clientY - startPoint.y - startPoint.menuHeight);
+            canvas.ctx.stroke();
+            console.log(e);
+        });
+    });
+};
+
+Rect.inactive = function (e, canvas) {};
+
+exports.default = Rect;
 
 /***/ })
 /******/ ]);

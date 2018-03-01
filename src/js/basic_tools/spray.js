@@ -15,7 +15,7 @@ Spray.getRandomPosition = function (spraySize) {
 Spray.paint = function(e, canvas) {
 
     const spraySize = canvas.ctx.lineWidth;
-    const density = 60 * (spraySize/10);
+    const density = 60 * (spraySize/5);
 
         for (let i = 0; i < density; i++) {
 

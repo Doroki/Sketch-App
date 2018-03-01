@@ -4,11 +4,13 @@ import Brush from "./basic_tools/brush.js";
 import Easer from "./basic_tools/easer.js";
 import Spray from "./basic_tools/spray.js";  
 import ColorPicker from "./basic_tools/color_picker.js"; 
+import Rect from "./basic_tools/rect.js"; 
+
 
 //////////
 
 const menu = document.querySelector(".menu");
-const canvass = document.querySelector("#canvas");
+const canvasElement = document.querySelector("#canvas");
 const workSpaceWidth = window.innerWidth;
 const workSpaceHeight = window.innerHeight - menu.offsetHeight;
 const toolColor = document.querySelector("#color-field");
@@ -18,7 +20,8 @@ const toolSet = {
 	"Brush": Brush,
 	"Easer": Easer,
 	"Color-Picker": ColorPicker,
-	"Spray": Spray
+	"Spray": Spray,
+	"Rect": Rect
 }
 
 ///////////////
@@ -70,3 +73,31 @@ function changeFontSize() {
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
+
+
+function downloadCanvas(anchor, canvasElement) {
+	const fileName = "my_image.png"
+	const link = canvasElement.toDataURL();
+
+	anchor.download = fileName;
+    anchor.href = link;
+}
+
+document.getElementById("get-file").addEventListener("change", function() {
+	// const reader = new FileReader();
+	// reader.onload =  function(event) {
+	// 	console.log(event)
+	// }
+	
+	var file = document.querySelector('input[type=file]').files[0];
+	var reader = new FileReader();
+
+reader.addEventListener("load", function () {
+	    console.log(reader.result)
+	  }, false);
+
+reader.readAsDataURL(file);
+console.log(reader)
+
+    // downloadCanvas(this, 'canvas');
+});
