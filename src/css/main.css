@@ -99,6 +99,15 @@ body {
           -ms-flex: 2;
               flex: 2; }
   .menu__button {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     width: 30%;
     height: 50px;
     background-color: transparent;
@@ -124,6 +133,8 @@ body {
               box-shadow: 0px 0px 4px 0px #263238;
       background-color: #d8dfe2;
       color: #263238; }
+    .menu__button input[type="file"] {
+      display: none; }
   .menu__size {
     display: -webkit-box;
     display: -ms-flexbox;
