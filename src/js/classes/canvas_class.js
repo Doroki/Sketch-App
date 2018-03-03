@@ -30,6 +30,9 @@ class Canvas {
 
 		//// properties to use for new methods of draw ///
 		this.drawMethod = null
+
+		//// Draw History ////
+		this.drawHistory = [];
 	}
 
 	changeProperties(properties) { // Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
@@ -61,6 +64,15 @@ class Canvas {
 		this.lastY = e.offsetY;
 	}
 
+	saveToHistory() {
+		if(this.drawHistory.length > 6) {
+		  const oldProperties = this.drawHistory.slice(1,7);
+		  this.drawHistory = oldProperties;
+		}
+		
+		this.drawHistory.push(this.canvasArea.toDataURL());   
+	}
+
   
 	bindEvents() {
 	   this.canvasArea.addEventListener("mousemove", this.mouseEventHandler.move = (e) => {this.draw(e)});
@@ -70,8 +82,14 @@ class Canvas {
 				this.lastY = e.offsetY;
 				this.draw(e);
 	   });
-	   this.canvasArea.addEventListener("mouseup", this.mouseEventHandler.up = () => this.isDrawing = false);
-	   this.canvasArea.addEventListener("mouseout", this.mouseEventHandler.out = () => this.isDrawing = false);
+	   this.canvasArea.addEventListener("mouseup", this.mouseEventHandler.up = () => {
+		   this.isDrawing = false
+		   this.saveToHistory();
+		});
+	   this.canvasArea.addEventListener("mouseout", this.mouseEventHandler.out = () => {
+		   this.isDrawing = false
+		   this.saveToHistory();
+		});
 	}
 
 	unbindEvents() {

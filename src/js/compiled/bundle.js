@@ -117,37 +117,54 @@ var _canvas_class = __webpack_require__(2);
 
 var _canvas_class2 = _interopRequireDefault(_canvas_class);
 
-var _brush = __webpack_require__(3);
+var _undo_redo_class = __webpack_require__(3);
+
+var _undo_redo_class2 = _interopRequireDefault(_undo_redo_class);
+
+var _brush = __webpack_require__(5);
 
 var _brush2 = _interopRequireDefault(_brush);
 
-var _easer = __webpack_require__(4);
+var _easer = __webpack_require__(6);
 
 var _easer2 = _interopRequireDefault(_easer);
 
-var _spray = __webpack_require__(5);
+var _spray = __webpack_require__(7);
 
 var _spray2 = _interopRequireDefault(_spray);
 
-var _color_picker = __webpack_require__(6);
+var _color_picker = __webpack_require__(8);
 
 var _color_picker2 = _interopRequireDefault(_color_picker);
 
-var _rect = __webpack_require__(7);
+var _rect = __webpack_require__(9);
 
 var _rect2 = _interopRequireDefault(_rect);
+
+var _open_file = __webpack_require__(10);
+
+var _open_file2 = _interopRequireDefault(_open_file);
+
+var _download = __webpack_require__(11);
+
+var _download2 = _interopRequireDefault(_download);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //////////
 
-var menu = document.querySelector(".menu"); // Class of Canvas element
+// Class of Canvas element
 
+var menu = document.querySelector(".menu");
 var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
 var toolColor = document.querySelector("#color-field");
 var toolSize = document.querySelector("#tool-size");
+var download = document.querySelector("#download");
+
+var redo = document.querySelector("#redo");
+var undo = document.querySelector("#undo");
 
 var toolSet = {
 	"Brush": _brush2.default,
@@ -156,9 +173,12 @@ var toolSet = {
 	"Spray": _spray2.default,
 	"Rect": _rect2.default
 
-	///////////////
+	// ///////////////
 
 };var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
+var Download = new _download2.default(download, Sketch);
+var Loader = new _open_file2.default("#get-file", Sketch);
+var History = new _undo_redo_class2.default("#redo", Sketch);
 
 function disableButton(e, canvas) {
 	var buttonID = document.querySelector("[data-usage=true]").id;
@@ -187,7 +207,7 @@ menu.addEventListener("click", function (e) {
 	}
 });
 
-/////////////////////////////////////////////////
+// /////////////////////////////////////////////////
 
 function changeColor() {
 	Sketch.changeProperties({ color: toolColor.value });
@@ -213,22 +233,17 @@ function downloadCanvas(anchor, canvasElement) {
 }
 
 document.getElementById("get-file").addEventListener("change", function () {
-	// const reader = new FileReader();
-	// reader.onload =  function(event) {
-	// 	console.log(event)
-	// }
+	Loader.loadFile();
+});
 
-	var file = document.querySelector('input[type=file]').files[0];
-	var reader = new FileReader();
-
-	reader.addEventListener("load", function () {
-		console.log(reader.result);
-	}, false);
-
-	reader.readAsDataURL(file);
-	console.log(reader);
-
-	// downloadCanvas(this, 'canvas');
+download.addEventListener('click', function () {
+	return Download.downloadCanvas;
+});
+redo.addEventListener("click", function () {
+	return History.redo();
+});
+undo.addEventListener("click", function () {
+	return History.undo();
 });
 
 /***/ }),
@@ -282,6 +297,9 @@ var Canvas = function () {
 
 		//// properties to use for new methods of draw ///
 		this.drawMethod = null;
+
+		//// Draw History ////
+		this.drawHistory = [];
 	}
 
 	_createClass(Canvas, [{
@@ -315,6 +333,16 @@ var Canvas = function () {
 			this.lastY = e.offsetY;
 		}
 	}, {
+		key: "saveToHistory",
+		value: function saveToHistory() {
+			if (this.drawHistory.length > 6) {
+				var oldProperties = this.drawHistory.slice(1, 7);
+				this.drawHistory = oldProperties;
+			}
+
+			this.drawHistory.push(this.canvasArea.toDataURL());
+		}
+	}, {
 		key: "bindEvents",
 		value: function bindEvents() {
 			var _this = this;
@@ -329,10 +357,12 @@ var Canvas = function () {
 				_this.draw(e);
 			});
 			this.canvasArea.addEventListener("mouseup", this.mouseEventHandler.up = function () {
-				return _this.isDrawing = false;
+				_this.isDrawing = false;
+				_this.saveToHistory();
 			});
 			this.canvasArea.addEventListener("mouseout", this.mouseEventHandler.out = function () {
-				return _this.isDrawing = false;
+				_this.isDrawing = false;
+				_this.saveToHistory();
 			});
 		}
 	}, {
@@ -352,6 +382,112 @@ exports.default = Canvas;
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _otherTools_class = __webpack_require__(4);
+
+var _otherTools_class2 = _interopRequireDefault(_otherTools_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Undo_Redo = function (_OtherTools) {
+    _inherits(Undo_Redo, _OtherTools);
+
+    function Undo_Redo(elementID, canvasElement) {
+        _classCallCheck(this, Undo_Redo);
+
+        var _this = _possibleConstructorReturn(this, (Undo_Redo.__proto__ || Object.getPrototypeOf(Undo_Redo)).call(this, elementID, canvasElement));
+
+        _this.undoHistory = [];
+        return _this;
+    }
+
+    _createClass(Undo_Redo, [{
+        key: "loadState",
+        value: function loadState(url) {
+            var canvasHeight = this.canvas.canvasArea.clientHeight;
+            var canvasWidth = this.canvas.canvasArea.clientWidth;
+            var imageObj = new Image();
+            imageObj.src = url;
+            imageObj.onload = function () {
+                this.canvas.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                this.canvas.ctx.drawImage(imageObj, 0, 0);
+            }.bind(this);
+        }
+    }, {
+        key: "redo",
+        value: function redo() {
+            if (this.undoHistory.length < 1) return;
+
+            var stateToLoad = this.undoHistory[this.undoHistory.length - 1];
+            this.undoHistory.pop();
+            this.canvas.drawHistory.push(stateToLoad);
+
+            this.loadState(stateToLoad);
+        }
+    }, {
+        key: "undo",
+        value: function undo() {
+            var history = this.canvas.drawHistory;
+            var historyLength = history.length;
+
+            console.log(history);
+            if (historyLength < 2) return;
+
+            var stateToUndo = history[historyLength - 1];
+            var stateToLoad = history[historyLength - 2];
+
+            this.undoHistory.push(stateToUndo);
+            this.canvas.drawHistory.pop();
+
+            this.loadState(stateToLoad);
+        }
+    }]);
+
+    return Undo_Redo;
+}(_otherTools_class2.default);
+
+exports.default = Undo_Redo;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var OtherTools = function OtherTools(elementID, canvasElement) {
+    _classCallCheck(this, OtherTools);
+
+    this.element = document.querySelector(elementID);
+    this.canvas = canvasElement;
+};
+
+exports.default = OtherTools;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -385,7 +521,7 @@ Brush.inactive = function (e, canvas) {
 exports.default = Brush;
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -420,7 +556,7 @@ Easer.inactive = function (e, canvas) {
 exports.default = Easer;
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -480,7 +616,7 @@ Spray.inactive = function (e, canvas) {
 exports.default = Spray;
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -541,7 +677,7 @@ ColorPicker.inactive = function (e, canvas) {
 exports.default = ColorPicker;
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -597,6 +733,119 @@ Rect.active = function (e, test) {
 Rect.inactive = function (e, canvas) {};
 
 exports.default = Rect;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var OpenFile = function () {
+    function OpenFile(elementID, canvasElement) {
+        _classCallCheck(this, OpenFile);
+
+        this.element = document.querySelector(elementID);
+        this.canvas = canvasElement;
+    }
+
+    _createClass(OpenFile, [{
+        key: "resizeImage",
+        value: function resizeImage() {}
+    }, {
+        key: "checkSizeImage",
+        value: function checkSizeImage(image) {
+            var canvasHeight = this.canvas.canvasArea.clientHeight;
+            var canvasWidth = this.canvas.canvasArea.clientWidth;
+            var imageWidth = image.width;
+            var imageHeight = image.height;
+
+            console.log(canvasHeight, imageHeight);
+
+            if (imageWidth > canvasWidth || imageHeight > canvasHeight) {
+                var widthRatio = canvasWidth / imageWidth;
+                var heightRatio = canvasHeight / imageHeight;
+
+                var toatlSizeRatio = Math.min(widthRatio, heightRatio); //it always will be fraction, smaller fraction will show longer side of image;
+                //to properly scale, it have be scaled by ratio of longer side
+
+                return {
+                    x: imageWidth * toatlSizeRatio,
+                    y: imageHeight * toatlSizeRatio
+                };
+            }
+        }
+    }, {
+        key: "loadFile",
+        value: function loadFile() {
+            var file = this.element.files[0];
+            var imageObj = new Image();
+            var reader = new FileReader();
+
+            reader.readAsDataURL(file);
+
+            reader.onload = function () {
+                imageObj.src = reader.result;
+            };
+
+            imageObj.onload = function () {
+                var imageSize = this.checkSizeImage(imageObj);
+                this.canvas.ctx.drawImage(imageObj, 0, 0, imageSize.x, imageSize.y);
+            }.bind(this);
+        }
+    }]);
+
+    return OpenFile;
+}();
+
+exports.default = OpenFile;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DownloadCanvas = function () {
+    function DownloadCanvas(element, canvasElement) {
+        _classCallCheck(this, DownloadCanvas);
+
+        this.fileName = "my_image.png";
+        this.canvas = canvasElement;
+        this.element = element;
+    }
+
+    _createClass(DownloadCanvas, [{
+        key: "downloadCanvas",
+        value: function downloadCanvas() {
+            var link = canvas.toDataURL();
+
+            this.element.download = fileName;
+            this.element.href = link;
+        }
+    }]);
+
+    return DownloadCanvas;
+}();
+
+exports.default = DownloadCanvas;
 
 /***/ })
 /******/ ]);
