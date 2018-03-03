@@ -13,16 +13,16 @@
         <div class="menu__container">
             <a id="download" href="" class="menu__button menu__button--bigger fa fa-floppy-o fa-3x"></a>
             <label for="get-file" class="menu__button menu__button--bigger fa fa-folder-open-o fa-3x">
-                <input id="get-file" type="file">
+                <input id="get-file" accept="image/*" type="file">
             </label>
         </div>
         
         <div class="menu__container">
-            <button class="menu__button fa fa-undo fa-2x"></button>
-             <button class="menu__button fa fa-scissors fa-2x"></button>
-             <button class="menu__button fa fa-repeat fa-2x"></button>
-             <button class="menu__button fa-select fa-2x"></button>
-             <button class="menu__button fa fa-clone fa-2x">
+            <button class="menu__button fa fa-scissors fa-2x"></button>
+            <button class="menu__button fa-select fa-2x"></button>
+            <button class="menu__button fa fa-clone fa-2x"></button>
+            <button id="undo" class="menu__button fa fa-undo fa-2x"></button>
+            <button id="redo" class="menu__button fa fa-repeat fa-2x"></button>
         </div>
         
         <div id="paint" class="menu__container">
