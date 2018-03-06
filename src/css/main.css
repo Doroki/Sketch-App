@@ -121,7 +121,7 @@ body {
     transition: box-shadow 0.25s linear, color 0.3s linear, background-color 0.4s linear;
     transition: box-shadow 0.25s linear, color 0.3s linear, background-color 0.4s linear, -webkit-box-shadow 0.25s linear; }
     .menu__button--bigger {
-      width: 45%;
+      width: 30%;
       height: 100%; }
     .menu__button--active {
       -webkit-box-shadow: 0px 0px 5px 0px #263238;
