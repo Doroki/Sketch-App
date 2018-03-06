@@ -8,8 +8,9 @@ import Spray from "./basic_tools/spray.js";
 import ColorPicker from "./basic_tools/color_picker.js"; 
 import Rect from "./basic_tools/rect.js"; 
 
-import OpenFile from "./others-buttons/open_file.js"
-import DownloadCanvas from "./others-buttons/download.js"
+import OpenFile from "./others-buttons/open_file.js";
+import DownloadCanvas from "./others-buttons/download.js";
+import CanvasStorage from "./others-buttons/storage.js";
 
 
 //////////
@@ -21,6 +22,7 @@ const workSpaceHeight = window.innerHeight - menu.offsetHeight;
 const toolColor = document.querySelector("#color-field");
 const toolSize = document.querySelector("#tool-size");
 const download = document.querySelector("#download");
+const save = document.querySelector("#save");
 
 const redo = document.querySelector("#redo");
 const undo = document.querySelector("#undo");
@@ -35,10 +37,12 @@ const toolSet = {
 
 // ///////////////
 
+
 const Sketch = new Canvas("#canvas", workSpaceWidth, workSpaceHeight);
-const Download = new DownloadCanvas(download, Sketch);
+const DownloadImg = new DownloadCanvas(download, document.querySelector("#canvas"));
+const StorageOfCanvas = new CanvasStorage(save, canvasElement, Sketch);
 const Loader = new OpenFile("#get-file", Sketch);
-const History = new Undo_Redo("#redo", Sketch);
+const DrawHistory = new Undo_Redo("#redo", Sketch);
 
 function disableButton(e, canvas) {
 	let buttonID = document.querySelector("[data-usage=true]").id;
@@ -86,19 +90,13 @@ function changeFontSize() {
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 
-
-function downloadCanvas(anchor, canvasElement) {
-	const fileName = "my_image.png"
-	const link = canvasElement.toDataURL();
-
-	anchor.download = fileName;
-    anchor.href = link;
-}
-
 document.getElementById("get-file").addEventListener("change", function() {
 	Loader.loadFile()
 });
 
-download.addEventListener('click', () => Download.downloadCanvas);
-redo.addEventListener("click", () => History.redo());
-undo.addEventListener("click", () => History.undo());
+download.addEventListener('click', () => DownloadImg.downloadCanvas());
+save.addEventListener('click', () => StorageOfCanvas.save());
+redo.addEventListener("click", DrawHistory.redo);
+undo.addEventListener("click", DrawHistory.undo);
+
+window.addEventListener('load', () => StorageOfCanvas.load());

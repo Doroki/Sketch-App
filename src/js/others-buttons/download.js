@@ -8,9 +8,9 @@ class DownloadCanvas {
     }  
 
     downloadCanvas() {
-        const link = canvas.toDataURL();
-
-        this.element.download = fileName;
+        const link = this.canvas.toDataURL();
+  
+        this.element.download = this.fileName;
         this.element.href = link;
     }
 }

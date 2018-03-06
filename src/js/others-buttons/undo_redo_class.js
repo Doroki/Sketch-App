@@ -9,6 +9,7 @@ class Undo_Redo extends OtherTools  {
     loadState(url) {
         const canvasHeight = this.canvas.canvasArea.clientHeight;
         const canvasWidth = this.canvas.canvasArea.clientWidth;
+        
         const imageObj = new Image();
         imageObj.src = url;
         imageObj.onload = function() {
@@ -18,7 +19,7 @@ class Undo_Redo extends OtherTools  {
     }
 
     redo() {
-        if(this.undoHistory.length < 1) return;
+        if(this.undoHistory.length <= 0) return;
 
         const stateToLoad = this.undoHistory[this.undoHistory.length - 1]
         this.undoHistory.pop();
@@ -31,8 +32,7 @@ class Undo_Redo extends OtherTools  {
         const history = this.canvas.drawHistory;
         const historyLength = history.length;
 
-        console.log(history);
-        if(historyLength < 2) return;
+        if(historyLength <= 1) return;
 
         const stateToUndo = history[historyLength - 1];
         const stateToLoad = history[historyLength - 2];

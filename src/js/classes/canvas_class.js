@@ -33,6 +33,7 @@ class Canvas {
 
 		//// Draw History ////
 		this.drawHistory = [];
+		this.saveToHistory(); // used during init of object to save blank canvas in history
 	}
 
 	changeProperties(properties) { // Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
@@ -83,12 +84,16 @@ class Canvas {
 				this.draw(e);
 	   });
 	   this.canvasArea.addEventListener("mouseup", this.mouseEventHandler.up = () => {
-		   this.isDrawing = false
-		   this.saveToHistory();
+			if(this.isDrawing) {
+				this.saveToHistory();
+				this.isDrawing = false
+			}
 		});
 	   this.canvasArea.addEventListener("mouseout", this.mouseEventHandler.out = () => {
-		   this.isDrawing = false
-		   this.saveToHistory();
+			if(this.isDrawing) {
+				this.saveToHistory();
+				this.isDrawing = false
+			}
 		});
 	}
 

@@ -6,9 +6,6 @@ class OpenFile {
         this.canvas = canvasElement;
     }
 
-    resizeImage() {
-
-    }
 
     checkSizeImage(image) {
         const canvasHeight = this.canvas.canvasArea.clientHeight;

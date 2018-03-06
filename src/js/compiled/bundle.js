@@ -149,19 +149,23 @@ var _download = __webpack_require__(11);
 
 var _download2 = _interopRequireDefault(_download);
 
+var _storage = __webpack_require__(12);
+
+var _storage2 = _interopRequireDefault(_storage);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //////////
 
-// Class of Canvas element
+var menu = document.querySelector(".menu"); // Class of Canvas element
 
-var menu = document.querySelector(".menu");
 var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
 var toolColor = document.querySelector("#color-field");
 var toolSize = document.querySelector("#tool-size");
 var download = document.querySelector("#download");
+var save = document.querySelector("#save");
 
 var redo = document.querySelector("#redo");
 var undo = document.querySelector("#undo");
@@ -175,10 +179,12 @@ var toolSet = {
 
 	// ///////////////
 
+
 };var Sketch = new _canvas_class2.default("#canvas", workSpaceWidth, workSpaceHeight);
-var Download = new _download2.default(download, Sketch);
+var DownloadImg = new _download2.default(download, document.querySelector("#canvas"));
+var StorageOfCanvas = new _storage2.default(save, canvasElement, Sketch);
 var Loader = new _open_file2.default("#get-file", Sketch);
-var History = new _undo_redo_class2.default("#redo", Sketch);
+var DrawHistory = new _undo_redo_class2.default("#redo", Sketch);
 
 function disableButton(e, canvas) {
 	var buttonID = document.querySelector("[data-usage=true]").id;
@@ -224,26 +230,21 @@ function changeFontSize() {}
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 
-function downloadCanvas(anchor, canvasElement) {
-	var fileName = "my_image.png";
-	var link = canvasElement.toDataURL();
-
-	anchor.download = fileName;
-	anchor.href = link;
-}
-
 document.getElementById("get-file").addEventListener("change", function () {
 	Loader.loadFile();
 });
 
 download.addEventListener('click', function () {
-	return Download.downloadCanvas;
+	return DownloadImg.downloadCanvas();
 });
-redo.addEventListener("click", function () {
-	return History.redo();
+save.addEventListener('click', function () {
+	return StorageOfCanvas.save();
 });
-undo.addEventListener("click", function () {
-	return History.undo();
+redo.addEventListener("click", DrawHistory.redo);
+undo.addEventListener("click", DrawHistory.undo);
+
+window.addEventListener('load', function () {
+	return StorageOfCanvas.load();
 });
 
 /***/ }),
@@ -300,6 +301,7 @@ var Canvas = function () {
 
 		//// Draw History ////
 		this.drawHistory = [];
+		this.saveToHistory(); // used during init of object to save blank canvas in history
 	}
 
 	_createClass(Canvas, [{
@@ -357,12 +359,16 @@ var Canvas = function () {
 				_this.draw(e);
 			});
 			this.canvasArea.addEventListener("mouseup", this.mouseEventHandler.up = function () {
-				_this.isDrawing = false;
-				_this.saveToHistory();
+				if (_this.isDrawing) {
+					_this.saveToHistory();
+					_this.isDrawing = false;
+				}
 			});
 			this.canvasArea.addEventListener("mouseout", this.mouseEventHandler.out = function () {
-				_this.isDrawing = false;
-				_this.saveToHistory();
+				if (_this.isDrawing) {
+					_this.saveToHistory();
+					_this.isDrawing = false;
+				}
 			});
 		}
 	}, {
@@ -422,6 +428,7 @@ var Undo_Redo = function (_OtherTools) {
         value: function loadState(url) {
             var canvasHeight = this.canvas.canvasArea.clientHeight;
             var canvasWidth = this.canvas.canvasArea.clientWidth;
+
             var imageObj = new Image();
             imageObj.src = url;
             imageObj.onload = function () {
@@ -432,7 +439,7 @@ var Undo_Redo = function (_OtherTools) {
     }, {
         key: "redo",
         value: function redo() {
-            if (this.undoHistory.length < 1) return;
+            if (this.undoHistory.length <= 0) return;
 
             var stateToLoad = this.undoHistory[this.undoHistory.length - 1];
             this.undoHistory.pop();
@@ -446,8 +453,7 @@ var Undo_Redo = function (_OtherTools) {
             var history = this.canvas.drawHistory;
             var historyLength = history.length;
 
-            console.log(history);
-            if (historyLength < 2) return;
+            if (historyLength <= 1) return;
 
             var stateToUndo = history[historyLength - 1];
             var stateToLoad = history[historyLength - 2];
@@ -758,9 +764,6 @@ var OpenFile = function () {
     }
 
     _createClass(OpenFile, [{
-        key: "resizeImage",
-        value: function resizeImage() {}
-    }, {
         key: "checkSizeImage",
         value: function checkSizeImage(image) {
             var canvasHeight = this.canvas.canvasArea.clientHeight;
@@ -835,9 +838,9 @@ var DownloadCanvas = function () {
     _createClass(DownloadCanvas, [{
         key: "downloadCanvas",
         value: function downloadCanvas() {
-            var link = canvas.toDataURL();
+            var link = this.canvas.toDataURL();
 
-            this.element.download = fileName;
+            this.element.download = this.fileName;
             this.element.href = link;
         }
     }]);
@@ -846,6 +849,55 @@ var DownloadCanvas = function () {
 }();
 
 exports.default = DownloadCanvas;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CanvasStorage = function () {
+    function CanvasStorage(element, canvasElement, canvas) {
+        _classCallCheck(this, CanvasStorage);
+
+        this.canvasElement = canvasElement;
+        this.canvas = canvas;
+        this.element = element;
+    }
+
+    _createClass(CanvasStorage, [{
+        key: "save",
+        value: function save() {
+            var link = this.canvasElement.toDataURL();
+
+            localStorage.setItem("img", link);
+        }
+    }, {
+        key: "load",
+        value: function load() {
+            var link = localStorage.getItem("img");
+
+            var imageObj = new Image();
+            imageObj.src = link;
+            imageObj.onload = function () {
+                this.canvas.ctx.drawImage(imageObj, 0, 0);
+            }.bind(this);
+        }
+    }]);
+
+    return CanvasStorage;
+}();
+
+exports.default = CanvasStorage;
 
 /***/ })
 /******/ ]);
