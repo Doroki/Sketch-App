@@ -176,3 +176,35 @@ body {
 
 .canvas {
   cursor: var(--canvas-cursor); }
+
+.modal {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 5000;
+  padding: 15px;
+  line-height: 2em;
+  text-align: center;
+  background-color: #e67575;
+  border-radius: 8px; }
+  .modal__info {
+    width: 80%;
+    font-weight: bold;
+    color: #444; }
+  .modal__button {
+    width: 25%;
+    padding: 5px;
+    text-transform: capitalize;
+    background-color: #DDD;
+    border: none; }
+    .modal__button:hover {
+      background-color: #fff; }
