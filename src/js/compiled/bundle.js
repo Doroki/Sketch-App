@@ -141,15 +141,19 @@ var _rect = __webpack_require__(9);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _open_file = __webpack_require__(10);
+var _text = __webpack_require__(10);
+
+var _text2 = _interopRequireDefault(_text);
+
+var _open_file = __webpack_require__(11);
 
 var _open_file2 = _interopRequireDefault(_open_file);
 
-var _download = __webpack_require__(11);
+var _download = __webpack_require__(12);
 
 var _download2 = _interopRequireDefault(_download);
 
-var _storage = __webpack_require__(12);
+var _storage = __webpack_require__(13);
 
 var _storage2 = _interopRequireDefault(_storage);
 
@@ -157,8 +161,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 //////////
 
-var menu = document.querySelector(".menu"); // Class of Canvas element
+// Class of Canvas element
 
+var menu = document.querySelector(".menu");
 var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
@@ -166,6 +171,7 @@ var toolColor = document.querySelector("#color-field");
 var toolSize = document.querySelector("#tool-size");
 var download = document.querySelector("#download");
 var save = document.querySelector("#save");
+var textTool = document.querySelector("#Text");
 
 var redo = document.querySelector("#redo");
 var undo = document.querySelector("#undo");
@@ -185,6 +191,7 @@ var DownloadImg = new _download2.default(download, document.querySelector("#canv
 var StorageOfCanvas = new _storage2.default(save, canvasElement, Sketch);
 var Loader = new _open_file2.default("#get-file", Sketch);
 var DrawHistory = new _undo_redo_class2.default("#redo", Sketch);
+var TextTool = new _text2.default(textTool, Sketch);
 
 function disableButton(e, canvas) {
 	var buttonID = document.querySelector("[data-usage=true]").id;
@@ -240,11 +247,15 @@ download.addEventListener('click', function () {
 save.addEventListener('click', function () {
 	return StorageOfCanvas.save();
 });
-redo.addEventListener("click", DrawHistory.redo);
-undo.addEventListener("click", DrawHistory.undo);
+redo.addEventListener("click", function () {
+	return DrawHistory.redo();
+});
+undo.addEventListener("click", function () {
+	return DrawHistory.undo();
+});
 
 window.addEventListener('load', function () {
-	return StorageOfCanvas.load();
+	return StorageOfCanvas.checkStorage();
 });
 
 /***/ }),
@@ -715,6 +726,21 @@ Rect.startDrawPoints = function (event, canvas) {
     };
 };
 
+Rect.loadImage = function (canvas) {
+    var history = canvas.drawHistory;
+    var stateToLoad = history[history.length - 2];
+
+    var canvasHeight = canvas.canvasArea.clientHeight;
+    var canvasWidth = canvas.canvasArea.clientWidth;
+
+    var imageObj = new Image();
+    imageObj.src = stateToLoad;
+    imageObj.onload = function () {
+        canvas.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        canvas.ctx.drawImage(imageObj, 0, 0);
+    };
+};
+
 Rect.active = function (e, test) {
     var canvas = test;
     canvas.unbindEvents();
@@ -725,14 +751,13 @@ Rect.active = function (e, test) {
 
     canvasArea.addEventListener("mousedown", function (event) {
 
-        canvas.ctx.clearRect(0, 0, 50, 50);
         var startPoint = Rect.startDrawPoints(event, canvas);
         console.log(startPoint);
         canvasArea.addEventListener("mousemove", function (e) {
+            this.loadImage(canvas);
             canvas.ctx.rect(startPoint.x, startPoint.y, e.clientX - startPoint.x, e.clientY - startPoint.y - startPoint.menuHeight);
             canvas.ctx.stroke();
-            console.log(e);
-        });
+        }.bind(Rect));
     });
 };
 
@@ -742,6 +767,79 @@ exports.default = Rect;
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Text = function () {
+    function Text(elementID, canvas) {
+        _classCallCheck(this, Text);
+
+        this.element = elementID;
+        this.canvas = canvas;
+        this.lastX;
+        this.lastY;
+        this.initEvents();
+    }
+
+    _createClass(Text, [{
+        key: "createTextField",
+        value: function createTextField(e) {
+            var cursorPosition = this.checkPosition(e);
+            this.lastX = cursorPosition.x;
+            this.lastY = cursorPosition.y;
+
+            var textField = document.createElement("textarea");
+            textField.setAttribute("style", "position: absolute;\n        top: " + this.lastY + ";\n        left: " + this.lastX + ";\n        border: 2px dashed #CCCCCC;\n        outline: none;\n        background-color: transparent;");
+            document.querySelector("body").appendChild(textField);
+        }
+    }, {
+        key: "checkPosition",
+        value: function checkPosition(e) {
+            return {
+                x: e.offsetX,
+                y: e.offsetY
+            };
+        }
+    }, {
+        key: "dragElement",
+        value: function dragElement() {}
+    }, {
+        key: "dropElement",
+        value: function dropElement() {}
+    }, {
+        key: "initTextField",
+        value: function initTextField() {}
+    }, {
+        key: "disabledTextFiled",
+        value: function disabledTextFiled() {}
+    }, {
+        key: "initEvents",
+        value: function initEvents() {
+            var _this = this;
+
+            this.element.addEventListener("click", function (e) {
+                _this.createTextField(e);
+            });
+        }
+    }]);
+
+    return Text;
+}();
+
+exports.default = Text;
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -784,11 +882,18 @@ var OpenFile = function () {
                     x: imageWidth * toatlSizeRatio,
                     y: imageHeight * toatlSizeRatio
                 };
+            } else {
+                return {
+                    x: imageWidth,
+                    y: imageHeight
+                };
             }
         }
     }, {
         key: "loadFile",
         value: function loadFile() {
+            var _this = this;
+
             var file = this.element.files[0];
             var imageObj = new Image();
             var reader = new FileReader();
@@ -800,9 +905,11 @@ var OpenFile = function () {
             };
 
             imageObj.onload = function () {
-                var imageSize = this.checkSizeImage(imageObj);
-                this.canvas.ctx.drawImage(imageObj, 0, 0, imageSize.x, imageSize.y);
-            }.bind(this);
+                var imageSize = _this.checkSizeImage(imageObj);
+                _this.canvas.ctx.drawImage(imageObj, 0, 0, imageSize.x, imageSize.y);
+            };
+
+            this.canvas.saveToHistory();
         }
     }]);
 
@@ -812,7 +919,7 @@ var OpenFile = function () {
 exports.default = OpenFile;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -851,7 +958,7 @@ var DownloadCanvas = function () {
 exports.default = DownloadCanvas;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -875,11 +982,75 @@ var CanvasStorage = function () {
     }
 
     _createClass(CanvasStorage, [{
+        key: "createLoadModal",
+        value: function createLoadModal() {
+            var _this = this;
+
+            var modal = document.createElement("div");
+            var info = document.createElement("p");
+            var accept = document.createElement("button");
+            var cancel = document.createElement("button");
+            var _eventHandler = void 0;
+
+            modal.classList.add("modal");
+            info.classList.add("modal__info");
+            accept.classList.add("modal__button");
+            cancel.classList.add("modal__button");
+
+            info.textContent = "Saved image was found, would you like to load it?";
+            accept.textContent = "Accept";
+            cancel.textContent = "Cancel";
+
+            modal.appendChild(info);
+            modal.appendChild(accept);
+            modal.appendChild(cancel);
+
+            document.querySelector("body").appendChild(modal);
+
+            modal.addEventListener("click", _eventHandler = function eventHandler(e) {
+                if (e.target.classList.contains("modal__button")) {
+                    if (e.target.textContent === "Accept") {
+                        _this.load();
+                    }
+
+                    modal.removeEventListener("click", _eventHandler);
+                    modal.parentNode.removeChild(modal);
+                }
+            });
+        }
+    }, {
+        key: "createSaveModal",
+        value: function createSaveModal() {
+            var modal = document.createElement("div");
+            var info = document.createElement("p");
+
+            modal.classList.add("modal");
+            info.classList.add("modal__info");
+
+            info.textContent = "Saved...";
+            modal.appendChild(info);
+
+            document.querySelector("body").appendChild(modal);
+
+            setTimeout(function () {
+                modal.parentNode.removeChild(modal);
+            }, 1000);
+        }
+    }, {
+        key: "checkStorage",
+        value: function checkStorage() {
+            if (localStorage.getItem("img") !== null) {
+                this.createLoadModal();
+            }
+        }
+    }, {
         key: "save",
         value: function save() {
             var link = this.canvasElement.toDataURL();
 
             localStorage.setItem("img", link);
+
+            this.createSaveModal();
         }
     }, {
         key: "load",

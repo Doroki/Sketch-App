@@ -26,6 +26,11 @@ class OpenFile {
                 x: imageWidth * toatlSizeRatio,
                 y: imageHeight * toatlSizeRatio
             }
+        } else {
+            return {
+                x: imageWidth,
+                y: imageHeight
+            }
         }
     }
     
@@ -40,10 +45,12 @@ class OpenFile {
             imageObj.src = reader.result;
         };
 
-        imageObj.onload = function() {
+        imageObj.onload = () => {
             const imageSize = this.checkSizeImage(imageObj);
             this.canvas.ctx.drawImage(imageObj, 0, 0, imageSize.x, imageSize.y);
-        }.bind(this);
+        }
+
+        this.canvas.saveToHistory();
     }
 }
 

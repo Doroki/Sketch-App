@@ -14,6 +14,21 @@ Rect.startDrawPoints = function(event, canvas) {
     }
 }
 
+Rect.loadImage = function(canvas) {
+    const history = canvas.drawHistory;
+    const stateToLoad = history[history.length - 2];
+
+
+    const canvasHeight = canvas.canvasArea.clientHeight;
+    const canvasWidth = canvas.canvasArea.clientWidth;
+        
+    const imageObj = new Image();
+    imageObj.src = stateToLoad;
+    imageObj.onload = function() {
+        canvas.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        canvas.ctx.drawImage(imageObj, 0, 0);
+    };
+}
 
 Rect.active = function(e, test) {
     const canvas = test;
@@ -26,14 +41,13 @@ Rect.active = function(e, test) {
 
 	canvasArea.addEventListener("mousedown", function(event){
         
-        canvas.ctx.clearRect(0,0,50,50);
 		const startPoint = Rect.startDrawPoints(event, canvas);
         console.log(startPoint)
 		canvasArea.addEventListener("mousemove", function(e){
+            this.loadImage(canvas)
             canvas.ctx.rect(startPoint.x, startPoint.y, e.clientX - startPoint.x, e.clientY - startPoint.y - startPoint.menuHeight);
             canvas.ctx.stroke();
-            console.log(e);
-        });
+        }.bind(Rect));
     });
 }
 
