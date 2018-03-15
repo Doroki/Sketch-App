@@ -1,17 +1,19 @@
 import Tool from "../classes/tool_class.js"; // Class of tools
 
-const Easer = new Tool('#Easer', '../my-icons-collection/svg/001-color-picker.png');
+class EaserTool extends Tool {
 
-Easer.active = function(e, canvas) {
+    active() {
 
-    canvas.changeProperties({drawStyle: "line", color: "#ffffff"});
-    document.querySelector("#color-field").disabled = true;
-    canvas.bindEvents();
+        this.canvas.changeProperties({drawStyle: "line", color: "#ffffff"});
+        document.querySelector("#color-field").disabled = true;
+        this.canvas.bindEvents();
+    }
+    
+    inactive() {
+        document.querySelector("#color-field").disabled = false;
+        this.canvas.unbindEvents();
+    }
 }
 
-Easer.inactive = function(e, canvas) {
-    document.querySelector("#color-field").disabled = false;
-    canvas.unbindEvents();
-}
 
-export default Easer;
+export default EaserTool;

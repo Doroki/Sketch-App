@@ -1,58 +1,81 @@
 
 
-class Text  {
-    constructor(elementID, canvas) {
-        this.element = elementID;
+class TextTool {
+    constructor(buttonElement, canvas, canvasElement) {
+        this.element = buttonElement;
         this.canvas = canvas;
-        this.lastX;
-        this.lastY;
+        this.canvasElement = canvasElement;
+
+        this.lastCursorX = 0;
+        this.lastCursorY = 0;
         this.initEvents();
     }
 
     createTextField(e) {
-        const cursorPosition = this.checkPosition(e);
-        this.lastX = cursorPosition.x;
-        this.lastY = cursorPosition.y;
+
+        this.lastCursorX = e.clientX;
+        this.lastCursorY = e.clientY;
 
         const textField = document.createElement("textarea");
         textField.setAttribute(`style`,
         `position: absolute;
-        top: ${this.lastY};
-        left: ${this.lastX};
+        top: ${this.lastCursorY}px;
+        left: ${this.lastCursorX}px;
         border: 2px dashed #CCCCCC;
         outline: none;
-        background-color: transparent;`);
+        background-color: transparent;
+        z-index: 5000;`);
         document.querySelector("body").appendChild(textField);
+
+        this.dragElement(textField)
     }
 
-    checkPosition(e) {
-        return {
-            x: e.offsetX,
-            y: e.offsetY
-        }
+    dragElement(element) {
+
+        let cursorPositionX;
+        let cursorPositionY;
+        document.addEventListener("resize", () => console.log("działa"));
+        // element.addEventListener("mousedown", (e) => {
+        //    this.initDragEvent(e, cursorPositionX, cursorPositionY, element)
+        // })
     }
 
-    dragElement() {
+    initDragEvent(e, cursorPositionX, cursorPositionY, element) {
+        let mouseUpHandler;
+        let mouseMoveHandler;
 
+        this.lastCursorX = e.clientX;
+        this.lastCursorY = e.clientY;
+
+        document.addEventListener("mouseup", mouseUpHandler = () => this.dropElement(mouseUpHandler, mouseMoveHandler));
+        document.addEventListener("mousemove", mouseMoveHandler = (e) => this.moveElement(e, cursorPositionX, cursorPositionY, element));
     }
 
-    dropElement() {
+    moveElement(e, cursorPositionX, cursorPositionY, element) {
 
+        cursorPositionX = this.lastCursorX  - e.clientX;
+        cursorPositionY = this.lastCursorY - e.clientY;
+        this.lastCursorX  = e.clientX;
+        this.lastCursorY = e.clientY;
+
+        element.style.top = (element.offsetTop - cursorPositionY) + "px";
+        element.style.left = (element.offsetLeft - cursorPositionX) + "px";
     }
 
-    initTextField() {
+    dropElement(mouseUpHandler, mouseMoveHandler) {
 
-    }
-
-    disabledTextFiled() {
-
-    }
+        document.removeEventListener("mouseup", mouseUpHandler);
+        document.removeEventListener("mousemove", mouseMoveHandler);
+      }
 
     initEvents() {
-        this.element.addEventListener("click", (e) => {
-            this.createTextField(e);
-        })
+
+        this.canvasElement.addEventListener("click", (e) => {
+
+            const textField = this.createTextField(e);
+
+        });
     }
 }
 
-export default Text;
+export default TextTool;

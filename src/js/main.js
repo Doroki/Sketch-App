@@ -1,78 +1,73 @@
+///// IMPORT FILES /////
 import Canvas from "./classes/canvas_class"; // Class of Canvas element
 
-import Undo_Redo from "./others-buttons/undo_redo_class"
+// import BrushTool from "./basic_tools/brush";
+// import EaserTool from "./basic_tools/easer";
+// import SprayTool from "./basic_tools/spray";  
+// import ColorPickerTool from "./basic_tools/color_picker"; 
+// import ReactTool from "./basic_tools/rect"; 
+import TextTool from "./basic_tools/text"; 
 
-import Brush from "./basic_tools/brush";
-import Easer from "./basic_tools/easer";
-import Spray from "./basic_tools/spray";  
-import ColorPicker from "./basic_tools/color_picker"; 
-import Rect from "./basic_tools/rect"; 
-import Text from "./basic_tools/text"; 
+// import OpenFile from "./others-buttons/open_file";
+// import DownloadCanvas from "./others-buttons/download";
+// import CanvasStorage from "./others-buttons/storage";
 
-import OpenFile from "./others-buttons/open_file";
-import DownloadCanvas from "./others-buttons/download";
-import CanvasStorage from "./others-buttons/storage";
+// import Undo_Redo from "./others-buttons/undo_redo_class"
 
 
-//////////
+/////----------------	ELEMENT HANDLERS ----------------------	/////
 
+// -- menu -- //
 const menu = document.querySelector(".menu");
+
+// -- canvas element -- //
 const canvasElement = document.querySelector("#canvas");
 const workSpaceWidth = window.innerWidth;
 const workSpaceHeight = window.innerHeight - menu.offsetHeight;
-const toolColor = document.querySelector("#color-field");
-const toolSize = document.querySelector("#tool-size");
-const download = document.querySelector("#download");
-const save = document.querySelector("#save");
-const textTool = document.querySelector("#Text");
 
-const redo = document.querySelector("#redo");
-const undo = document.querySelector("#undo");
+// -- tool buttons -- //
+const brushButton = menu.querySelector("#Brush");
+const easerButton = menu.querySelector("#Easer");
+const colorPickerButton = menu.querySelector("#Color-Picker");
+const sprayButton = menu.querySelector("#Spray");
+const textButton = menu.querySelector("#Text");
+const rectButton = menu.querySelector("#Rect");
 
-const toolSet = {
-	"Brush": Brush,
-	"Easer": Easer,
-	"Color-Picker": ColorPicker,
-	"Spray": Spray,
-	"Rect": Rect
-}
+// -- input properties -- //
+const toolColor = menu.querySelector("#color-field");
+const toolSize = menu.querySelector("#tool-size");
 
-// ///////////////
+// -- others buttons -- //
+const save = menu.querySelector("#save");
+const download = menu.querySelector("#download");
+const openFile = menu.querySelector("#get-file");
 
+const redoButton = menu.querySelector("#redo");
+const undoButton = menu.querySelector("#undo");
+const cutTool = menu.querySelector("#cut");
+const selectTool = menu.querySelector("#select");
+const copyTool = menu.querySelector("#copy");
 
-const Sketch = new Canvas("#canvas", workSpaceWidth, workSpaceHeight);
-const DownloadImg = new DownloadCanvas(download, document.querySelector("#canvas"));
-const StorageOfCanvas = new CanvasStorage(save, canvasElement, Sketch);
-const Loader = new OpenFile("#get-file", Sketch);
-const DrawHistory = new Undo_Redo("#redo", Sketch);
-const TextTool = new Text(textTool, Sketch);
+/////----------------	OBJECTS ----------------------	/////
 
-function disableButton(e, canvas) {
-	let buttonID = document.querySelector("[data-usage=true]").id;
-	let toolToDisable = toolSet[buttonID];
+const Sketch = new Canvas(canvasElement, workSpaceWidth, workSpaceHeight);
 
-	toolToDisable.disableButton();
-	toolToDisable.inactive(e, canvas);
-}
+// const Brush = new BrushTool(brushButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+// const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+// const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
+// const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+const Text = new TextTool(textButton, Sketch, canvasElement);
+// const Rect;
 
-function enableButton(e, canvas) {
-	let buttonID = e.target.id;
-	let toolToActive = toolSet[buttonID];
+// const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
+// const DownloadImage = new DownloadCanvas(download, canvasElement);
+// const LoadFile = new OpenFile(openFile, Sketch);
 
-	toolToActive.enableButton();
-	toolToActive.active(e, canvas);
-}
+// const DrawHistory = new Undo_Redo(Sketch);
+// const SelectArea;
+// const CutImage;
+// const CopyImage;
 
-function useButton(e) {
-	disableButton(e, Sketch);
-	enableButton(e, Sketch);
-}
-
-menu.addEventListener("click", e => {
-	if(e.target.hasAttribute("data-usage")){
-		useButton(e);	
-	}
-});
 
 // /////////////////////////////////////////////////
 
@@ -88,18 +83,54 @@ function changeFontSize() {
 	
 }
 
-/////////
+
+/////----------------	TOOLSET FOR EVENT LISTENER (ENABLE / DISABLE BUTTON)   --------------------/////
+
+// const toolSet = {
+// 	"Brush": Brush,
+// 	"Easer": Easer,
+// 	"Color-Picker": ColorPicker,
+// 	"Spray": Spray
+// 	// "Rect": Rect
+// }
+
+/////----------------	EVENT LISTENERS  ----------------------	/////
+
+// window.addEventListener('load', () => SketchStorage.checkStorage());
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 
-document.getElementById("get-file").addEventListener("change", function() {
-	Loader.loadFile()
-});
+// save.addEventListener("click", () => SketchStorage.save());
+// download.addEventListener("click", () => DownloadImage.downloadCanvas());
+// openFile.addEventListener("change", function() {LoadFile.loadFile()});
+// redoButton.addEventListener("click", () => DrawHistory.redo());
+// undoButton.addEventListener("click", () => DrawHistory.undo());
 
-download.addEventListener('click', () => DownloadImg.downloadCanvas());
-save.addEventListener('click', () => StorageOfCanvas.save());
-redo.addEventListener("click", () => DrawHistory.redo());
-undo.addEventListener("click", () => DrawHistory.undo());
 
-window.addEventListener('load', () => StorageOfCanvas.checkStorage());
+// function disableButton(e) {
+// 	let buttonID = document.querySelector("[data-usage=true]").id;
+// 	let toolToDisable = toolSet[buttonID];
+	
+// 	toolToDisable.disableButton();
+// 	toolToDisable.inactive();
+// }
+
+// function enableButton(e) {
+// 	let buttonID = e.target.id;
+// 	let toolToActive = toolSet[buttonID];
+
+// 	toolToActive.enableButton();
+// 	toolToActive.active();
+// }
+
+// function useButton(e) {
+// 	disableButton(e);
+// 	enableButton(e);
+// }
+
+// menu.addEventListener("click", e => {
+// 	if(e.target.hasAttribute("data-usage")){
+// 		useButton(e);	
+// 	}
+// });

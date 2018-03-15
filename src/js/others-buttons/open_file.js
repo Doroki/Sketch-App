@@ -1,11 +1,6 @@
+import OtherTools from "../classes/otherTools_class.js";
 
-
-class OpenFile {
-    constructor(elementID, canvasElement) {
-        this.element = document.querySelector(elementID);
-        this.canvas = canvasElement;
-    }
-
+class OpenFile extends OtherTools {
 
     checkSizeImage(image) {
         const canvasHeight = this.canvas.canvasArea.clientHeight;
@@ -13,7 +8,6 @@ class OpenFile {
         const imageWidth = image.width;
         const imageHeight = image.height;
 
-        console.log(canvasHeight, imageHeight);
 
         if(imageWidth > canvasWidth || imageHeight > canvasHeight) {
             const widthRatio = canvasWidth / imageWidth;

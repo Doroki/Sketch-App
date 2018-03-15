@@ -1,8 +1,8 @@
 import OtherTools from "../classes/otherTools_class.js";
 
 class Undo_Redo extends OtherTools  {
-    constructor(elementID, canvasElement) {
-        super(elementID, canvasElement);
+    constructor(canvasElement) {
+        super(null, canvasElement);
         this.undoHistory = [];
     }
 

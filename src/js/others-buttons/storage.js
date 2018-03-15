@@ -1,11 +1,6 @@
+import OtherTools from "../classes/otherTools_class.js";
 
-
-class CanvasStorage {
-    constructor(element, canvasElement, canvas) {
-        this.canvasElement = canvasElement;
-        this.canvas = canvas;
-        this.element = element;
-    } 
+class CanvasStorage extends OtherTools {
 
     createLoadModal() {
         const modal = document.createElement("div");

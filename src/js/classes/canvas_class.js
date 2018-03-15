@@ -1,7 +1,7 @@
 class Canvas {
   
 	constructor(canvasElement, width, height){ // creating canvas object, needed arguments (1. selector of canvas element, 2. width, 3. height)
-		this.canvasArea = document.querySelector(canvasElement);
+		this.canvasArea = canvasElement;
 		this.canvasArea.width = width;
 		this.canvasArea.height = height;
 		this.ctx = this.canvasArea.getContext('2d');

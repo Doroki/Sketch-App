@@ -1,17 +1,17 @@
 import Tool from "../classes/tool_class.js"; // Class of tools
 
-const Brush = new Tool('#Brush', '../my-icons-collection/svg/001-color-picker.png');
+class BrushTool extends Tool {
 
+    active() {
 
-Brush.active = function(e, canvas) {
-
-    let paintColor = document.querySelector("[type=color]").value;
-    canvas.changeProperties({color: paintColor, drawStyle: "line"});
-    canvas.bindEvents();
+        let paintColor = document.querySelector("[type=color]").value;
+        this.canvas.changeProperties({color: paintColor, drawStyle: "line"});
+        this.canvas.bindEvents();
+    }
+    
+    inactive() {
+        this.canvas.unbindEvents();
+    }
 }
 
-Brush.inactive = function(e, canvas) {
-    canvas.unbindEvents();
-}
-
-export default Brush;
+export default BrushTool;

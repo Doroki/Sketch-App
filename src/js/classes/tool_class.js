@@ -1,8 +1,10 @@
 
 class Tool {
-    constructor(idElement, cursorUrl) {
-        this.element = document.querySelector(idElement)
-        this.cursorUrl = cursorUrl
+    constructor(elementButton, canvasObject, cursorUrl, canvasElement = null) {
+        this.element = elementButton;
+        this.canvas = canvasObject;
+        this.cursorUrl = cursorUrl;
+        this.canvasElement = canvasElement;
     }
 
     disableButton() {

@@ -1,8 +1,9 @@
 
 class OtherTools {
-    constructor(elementID, canvasElement) {
-        this.element = document.querySelector(elementID);
-        this.canvas = canvasElement;
+    constructor(elementButton, canvasObject, canvasElement) {
+        this.element = elementButton;
+        this.canvas = canvasObject;
+        this.canvasElement = canvasElement;
     }
 }
 

@@ -1,10 +1,9 @@
+import OtherTools from "../classes/otherTools_class.js";
 
-
-class DownloadCanvas {
+class DownloadCanvas extends OtherTools {
     constructor(element, canvasElement) {
+        super(element, canvasElement);
         this.fileName = "my_image.png";
-        this.canvas = canvasElement;
-        this.element = element;
     }  
 
     downloadCanvas() {
