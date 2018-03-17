@@ -6,7 +6,7 @@ import Canvas from "./classes/canvas_class"; // Class of Canvas element
 // import SprayTool from "./basic_tools/spray";  
 // import ColorPickerTool from "./basic_tools/color_picker"; 
 // import ReactTool from "./basic_tools/rect"; 
-import TextTool from "./basic_tools/text"; 
+import TextDrawTool from "./basic_tools/text"; 
 
 // import OpenFile from "./others-buttons/open_file";
 // import DownloadCanvas from "./others-buttons/download";
@@ -56,7 +56,7 @@ const Sketch = new Canvas(canvasElement, workSpaceWidth, workSpaceHeight);
 // const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
 // const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
 // const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-const Text = new TextTool(textButton, Sketch, canvasElement);
+const TextTool = new TextDrawTool(textButton, Sketch, canvasElement);
 // const Rect;
 
 // const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
@@ -100,6 +100,7 @@ function changeFontSize() {
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
+textButton.addEventListener("click", () => TextTool.use())
 
 // save.addEventListener("click", () => SketchStorage.save());
 // download.addEventListener("click", () => DownloadImage.downloadCanvas());

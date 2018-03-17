@@ -136,7 +136,7 @@ var Sketch = new _canvas_class2.default(canvasElement, workSpaceWidth, workSpace
 // const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
 // const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
 // const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-var Text = new _text2.default(textButton, Sketch, canvasElement);
+var TextTool = new _text2.default(textButton, Sketch, canvasElement);
 // const Rect;
 
 // const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
@@ -177,6 +177,9 @@ function changeFontSize() {}
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
+textButton.addEventListener("click", function () {
+	return TextTool.use();
+});
 
 // save.addEventListener("click", () => SketchStorage.save());
 // download.addEventListener("click", () => DownloadImage.downloadCanvas());
@@ -362,13 +365,109 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _advancedTools2 = __webpack_require__(3);
+
+var _advancedTools3 = _interopRequireDefault(_advancedTools2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextDrawTool = function (_advancedTools) {
+    _inherits(TextDrawTool, _advancedTools);
+
+    function TextDrawTool(elementButton, canvasObject, canvasElement) {
+        _classCallCheck(this, TextDrawTool);
+
+        var _this = _possibleConstructorReturn(this, (TextDrawTool.__proto__ || Object.getPrototypeOf(TextDrawTool)).call(this, elementButton, canvasObject, canvasElement));
+
+        console.log(_this);
+        return _this;
+    }
+
+    return TextDrawTool;
+}(_advancedTools3.default);
+
+exports.default = TextDrawTool;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _movableElements_class = __webpack_require__(4);
+
+var _movableElements_class2 = _interopRequireDefault(_movableElements_class);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var advancedTool = function (_movableElements) {
+    _inherits(advancedTool, _movableElements);
+
+    function advancedTool(elementButton, canvasObject) {
+        var canvasElement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+        _classCallCheck(this, advancedTool);
+
+        return _possibleConstructorReturn(this, (advancedTool.__proto__ || Object.getPrototypeOf(advancedTool)).call(this, elementButton, canvasObject, canvasElement));
+    }
+
+    _createClass(advancedTool, [{
+        key: "disableButton",
+        value: function disableButton() {
+            this.element.classList.remove("menu__button--active");
+            this.element.dataset.usage = "false";
+        }
+    }, {
+        key: "enableButton",
+        value: function enableButton() {
+            this.element.classList.add("menu__button--active"); // set button to active
+            this.element.dataset.usage = "true";
+            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
+        }
+    }]);
+
+    return advancedTool;
+}(_movableElements_class2.default);
+
+exports.default = advancedTool;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var TextTool = function () {
-    function TextTool(buttonElement, canvas, canvasElement) {
-        _classCallCheck(this, TextTool);
+var movableElements = function () {
+    function movableElements(buttonElement, canvas, canvasElement) {
+        _classCallCheck(this, movableElements);
 
         this.element = buttonElement;
         this.canvas = canvas;
@@ -376,51 +475,110 @@ var TextTool = function () {
 
         this.lastCursorX = 0;
         this.lastCursorY = 0;
-        this.initEvents();
     }
 
-    _createClass(TextTool, [{
+    _createClass(movableElements, [{
         key: "createTextField",
         value: function createTextField(e) {
 
             this.lastCursorX = e.clientX;
             this.lastCursorY = e.clientY;
 
+            var wrapper = document.createElement("div");
             var textField = document.createElement("textarea");
-            textField.setAttribute("style", "position: absolute;\n        top: " + this.lastCursorY + "px;\n        left: " + this.lastCursorX + "px;\n        border: 2px dashed #CCCCCC;\n        outline: none;\n        background-color: transparent;\n        z-index: 5000;");
-            document.querySelector("body").appendChild(textField);
+            var resizeHandler = document.createElement("span");
 
-            this.dragElement(textField);
+            wrapper.setAttribute("style", "position: absolute;\n        top: " + this.lastCursorY + "px;\n        left: " + this.lastCursorX + "px;\n        background-color: transparent;\n        z-index: 500;");
+
+            textField.setAttribute("style", "border: 2px dashed #000;\n        margin: 10px;\n        background-color: transparent;\n        z-index: 5000;\n        resize: none;");
+
+            resizeHandler.setAttribute("style", "display: inline-block;\n        width: 20px;\n        height: 20px;\n        border: 2px dashed #000;\n        background-color: #000;\n        margin-right: -20px;\n        margin-bottom: -20px;\n        z-index: 5000;");
+
+            wrapper.appendChild(textField);
+            wrapper.appendChild(resizeHandler);
+            document.querySelector("body").appendChild(wrapper);
+
+            this.dragElement(wrapper, textField);
+            this.resizeEvent(wrapper, textField, resizeHandler);
+        }
+
+        ///////// ---------------------  RESIZE ELEMENT ----------------------- //////////
+
+    }, {
+        key: "resizeEvent",
+        value: function resizeEvent(wrapper, textField, resizeHandler) {
+            var _this = this;
+
+            resizeHandler.addEventListener("mousedown", function (e) {
+                _this.initResizeEvent(e, wrapper, textField);
+            });
         }
     }, {
+        key: "initResizeEvent",
+        value: function initResizeEvent(e, container, field) {
+            var _this2 = this;
+
+            var elementPositionY = container.offsetTop;
+            var elementPositionX = container.offsetLeft;
+
+            var _mouseUpHandler = void 0;
+            var mouseMoveHandler = void 0;
+
+            document.addEventListener("mouseup", _mouseUpHandler = function mouseUpHandler() {
+                return _this2.stopResizeElement(_mouseUpHandler, mouseMoveHandler);
+            });
+            document.addEventListener("mousemove", mouseMoveHandler = function mouseMoveHandler(e) {
+                return _this2.resizeElement(e, elementPositionX, elementPositionY, container, field);
+            });
+        }
+    }, {
+        key: "resizeElement",
+        value: function resizeElement(e, x, y, container, field) {
+
+            var cursorPositionY = e.clientY - y - 25;
+            var cursorPositionX = e.clientX - x - 25;
+
+            field.style.width = cursorPositionX + "px";
+            field.style.height = cursorPositionY + "px";
+        }
+    }, {
+        key: "stopResizeElement",
+        value: function stopResizeElement(mouseUpHandler, mouseMoveHandler) {
+
+            document.removeEventListener("mouseup", mouseUpHandler);
+            document.removeEventListener("mousemove", mouseMoveHandler);
+        }
+
+        ///////// ---------------------  DRAG & DROP ELEMENT ----------------------- //////////
+
+    }, {
         key: "dragElement",
-        value: function dragElement(element) {
+        value: function dragElement(wrapper, textField) {
+            var _this3 = this;
 
             var cursorPositionX = void 0;
             var cursorPositionY = void 0;
-            document.addEventListener("resize", function () {
-                return console.log("działa");
+
+            textField.addEventListener("mousedown", function (e) {
+                _this3.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper);
             });
-            // element.addEventListener("mousedown", (e) => {
-            //    this.initDragEvent(e, cursorPositionX, cursorPositionY, element)
-            // })
         }
     }, {
         key: "initDragEvent",
         value: function initDragEvent(e, cursorPositionX, cursorPositionY, element) {
-            var _this = this;
+            var _this4 = this;
 
-            var _mouseUpHandler = void 0;
+            var _mouseUpHandler2 = void 0;
             var mouseMoveHandler = void 0;
 
             this.lastCursorX = e.clientX;
             this.lastCursorY = e.clientY;
 
-            document.addEventListener("mouseup", _mouseUpHandler = function mouseUpHandler() {
-                return _this.dropElement(_mouseUpHandler, mouseMoveHandler);
+            document.addEventListener("mouseup", _mouseUpHandler2 = function mouseUpHandler() {
+                return _this4.dropElement(_mouseUpHandler2, mouseMoveHandler);
             });
             document.addEventListener("mousemove", mouseMoveHandler = function mouseMoveHandler(e) {
-                return _this.moveElement(e, cursorPositionX, cursorPositionY, element);
+                return _this4.moveElement(e, cursorPositionX, cursorPositionY, element);
             });
         }
     }, {
@@ -443,21 +601,20 @@ var TextTool = function () {
             document.removeEventListener("mousemove", mouseMoveHandler);
         }
     }, {
-        key: "initEvents",
-        value: function initEvents() {
-            var _this2 = this;
+        key: "use",
+        value: function use() {
+            var _this5 = this;
 
             this.canvasElement.addEventListener("click", function (e) {
-
-                var textField = _this2.createTextField(e);
+                _this5.createTextField(e);
             });
         }
     }]);
 
-    return TextTool;
+    return movableElements;
 }();
 
-exports.default = TextTool;
+exports.default = movableElements;
 
 /***/ })
 /******/ ]);
