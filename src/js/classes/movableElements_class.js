@@ -1,34 +1,57 @@
-class movableElements {
-    constructor(buttonElement, canvas, canvasElement) {
+
+class MovableElements {
+    constructor(buttonElement, canvas, canvasElement, elementToCreate) {
         this.element = buttonElement;
         this.canvas = canvas;
         this.canvasElement = canvasElement;
+        this.elementToCreate = elementToCreate;
+        this.menuHeight = document.querySelector(".menu").offsetHeight;
+
+        this.isFieldOn = false;
+
+        this.pleaceToDraw = {
+            x: 0,
+            y: 0
+        }
 
         this.lastCursorX = 0;
         this.lastCursorY = 0;
+
+
     }
 
-    createTextField(e) {
 
-        this.lastCursorX = e.clientX;
-        this.lastCursorY = e.clientY;
+    showContentElement(event) {
+        const e = event || {clientX: 0, clientY: 0};
+        const wrapper = this.elementToDraw.parentElement;
+        
+        this.lastCursorX = e.clientX - 10;
+        this.lastCursorY = e.clientY - 10 + this.menuHeight;
+
+        wrapper.style.top = `${this.lastCursorY}px`;
+        wrapper.style.left = `${this.lastCursorX}px`;
+
+        document.querySelector("body").appendChild(wrapper);
+    }
+
+    createContentElement() {
 
         const wrapper = document.createElement("div");
-        const textField = document.createElement("textarea");
+        this.elementToDraw = document.createElement(`${this.elementToCreate}`);
         const resizeHandler = document.createElement("span");
-
 
         wrapper.setAttribute(`style`,
         `position: absolute;
-        top: ${this.lastCursorY}px;
-        left: ${this.lastCursorX}px;
+        top: 100px;
+        left: 100px;
         background-color: transparent;
         z-index: 500;`);
         
 
-        textField.setAttribute(`style`,
+        this.elementToDraw.setAttribute(`style`,
         `border: 2px dashed #000;
         margin: 10px;
+        padding: 0px;
         background-color: transparent;
         z-index: 5000;
         resize: none;`);
@@ -45,24 +68,43 @@ class movableElements {
         z-index: 5000;`);
 
 
-        wrapper.appendChild(textField);
+        wrapper.appendChild(this.elementToDraw);
         wrapper.appendChild(resizeHandler);
-        document.querySelector("body").appendChild(wrapper);
 
-        this.dragElement(wrapper, textField);
-        this.resizeEvent(wrapper, textField, resizeHandler);
+        this.dragElement(wrapper);
+        this.resizeEvent(wrapper, resizeHandler);
+    }
+
+    deleteContentElement() {
+        const wrapper = this.elementToDraw.parentElement;
+
+        wrapper.remove();
+    }
+
+    checkPositionOfElement() {
+        const wrapper = this.elementToDraw.parentElement;
+        this.pleaceToDraw.x = wrapper.offsetLeft + 12; // "14" width of margin + border + padding
+        this.pleaceToDraw.y = wrapper.offsetTop + 12 - this.menuHeight;
+
+        return {
+            x: wrapper.offsetLeft + 12,
+            y: wrapper.offsetTop + 12 - this.menuHeight,
+            width: this.elementToDraw.offsetWidth,
+            height: this.elementToDraw.offsetHeight
+        }
     }
 
     ///////// ---------------------  RESIZE ELEMENT ----------------------- //////////
-    resizeEvent(wrapper, textField, resizeHandler) {
+    resizeEvent(wrapper, resizeHandler) {
 
         resizeHandler.addEventListener("mousedown", (e) => {
-            this.initResizeEvent(e, wrapper, textField)
+            e.preventDefault();
+            this.initResizeEvent(e, wrapper)
          });
 
     }
 
-    initResizeEvent(e, container, field) {
+    initResizeEvent(e, container) {
 
         const elementPositionY = container.offsetTop;
         const elementPositionX = container.offsetLeft;
@@ -72,31 +114,34 @@ class movableElements {
 
 
         document.addEventListener("mouseup", mouseUpHandler = () => this.stopResizeElement(mouseUpHandler, mouseMoveHandler));
-        document.addEventListener("mousemove", mouseMoveHandler = (e) => this.resizeElement(e, elementPositionX, elementPositionY, container, field));
+        document.addEventListener("mousemove", mouseMoveHandler = (e) => this.resizeElement(e, elementPositionX, elementPositionY, container));
     }
 
-    resizeElement(e, x, y, container, field) {
+    resizeElement(e, x, y, container) {
 
         let cursorPositionY = e.clientY - y - 25;
         let cursorPositionX = e.clientX - x - 25;
 
-        field.style.width = cursorPositionX + "px";
-        field.style.height = cursorPositionY + "px";
+        this.elementToDraw.style.width = cursorPositionX + "px";
+        this.elementToDraw.style.height = cursorPositionY + "px";
     }
 
     stopResizeElement(mouseUpHandler, mouseMoveHandler) {
 
         document.removeEventListener("mouseup", mouseUpHandler);
         document.removeEventListener("mousemove", mouseMoveHandler);
+
+        this.checkPositionOfElement();
     }
 
     ///////// ---------------------  DRAG & DROP ELEMENT ----------------------- //////////
-    dragElement(wrapper, textField) {
+    dragElement(wrapper) {
 
         let cursorPositionX;
         let cursorPositionY;
 
-        textField.addEventListener("mousedown", (e) => {
+        this.elementToDraw.addEventListener("mousedown", (e) => {
+            e.preventDefault();
            this.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper)
         })
     }
@@ -127,13 +172,21 @@ class movableElements {
 
         document.removeEventListener("mouseup", mouseUpHandler);
         document.removeEventListener("mousemove", mouseMoveHandler);
-      }
+
+        this.checkPositionOfElement();
+    }
 
     use() {
         this.canvasElement.addEventListener("click", (e) => {
-            this.createTextField(e);
+            if(this.isFieldOn) {
+                this.deleteContentElement();
+                this.isFieldOn = false;
+            } else {
+                this.showContentElement(e);
+                this.isFieldOn = true;
+            }
         });
     }
 }
 
-export default movableElements;
+export default MovableElements;

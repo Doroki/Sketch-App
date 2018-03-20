@@ -6,9 +6,9 @@ import Canvas from "./classes/canvas_class"; // Class of Canvas element
 // import SprayTool from "./basic_tools/spray";  
 // import ColorPickerTool from "./basic_tools/color_picker"; 
 // import ReactTool from "./basic_tools/rect"; 
-import TextDrawTool from "./basic_tools/text"; 
+// import TextDrawTool from "./basic_tools/text"; 
 
-// import OpenFile from "./others-buttons/open_file";
+import OpenFile from "./others-buttons/open_file";
 // import DownloadCanvas from "./others-buttons/download";
 // import CanvasStorage from "./others-buttons/storage";
 
@@ -37,6 +37,8 @@ const rectButton = menu.querySelector("#Rect");
 const toolColor = menu.querySelector("#color-field");
 const toolSize = menu.querySelector("#tool-size");
 
+const fontSize = menu.querySelector("#font-size");
+
 // -- others buttons -- //
 const save = menu.querySelector("#save");
 const download = menu.querySelector("#download");
@@ -56,12 +58,12 @@ const Sketch = new Canvas(canvasElement, workSpaceWidth, workSpaceHeight);
 // const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
 // const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
 // const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-const TextTool = new TextDrawTool(textButton, Sketch, canvasElement);
+// const TextTool = new TextDrawTool(textButton, Sketch, canvasElement, "textarea");
 // const Rect;
 
 // const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
 // const DownloadImage = new DownloadCanvas(download, canvasElement);
-// const LoadFile = new OpenFile(openFile, Sketch);
+const LoadFile = new OpenFile(openFile, Sketch, canvasElement, "img");
 
 // const DrawHistory = new Undo_Redo(Sketch);
 // const SelectArea;
@@ -80,7 +82,8 @@ function changeToolSize() {
 }
 
 function changeFontSize() {
-	
+	TextTool.setTextStyle({fontSize: `${fontSize.value}px`})
+	console.log(TextTool.textPropety)
 }
 
 
@@ -100,11 +103,12 @@ function changeFontSize() {
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
+fontSize.addEventListener("change", changeFontSize);
 textButton.addEventListener("click", () => TextTool.use())
 
 // save.addEventListener("click", () => SketchStorage.save());
 // download.addEventListener("click", () => DownloadImage.downloadCanvas());
-// openFile.addEventListener("change", function() {LoadFile.loadFile()});
+openFile.addEventListener("change", function() {LoadFile.loadFile()});
 // redoButton.addEventListener("click", () => DrawHistory.redo());
 // undoButton.addEventListener("click", () => DrawHistory.undo());
 

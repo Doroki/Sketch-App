@@ -1,13 +1,18 @@
-import OtherTools from "../classes/otherTools_class.js";
+import MovableElements from "../classes/movableElements_class.js";
 
-class OpenFile extends OtherTools {
+
+class OpenFile extends MovableElements {
+
+    constructor(buttonElement, canvas, canvasElement, elementToCreate) {
+        super(buttonElement, canvas, canvasElement, elementToCreate)
+    }
+    
 
     checkSizeImage(image) {
         const canvasHeight = this.canvas.canvasArea.clientHeight;
         const canvasWidth = this.canvas.canvasArea.clientWidth;
-        const imageWidth = image.width;
-        const imageHeight = image.height;
-
+        const imageWidth = image.naturalWidth;
+        const imageHeight = image.naturalHeight;
 
         if(imageWidth > canvasWidth || imageHeight > canvasHeight) {
             const widthRatio = canvasWidth / imageWidth;
@@ -17,8 +22,8 @@ class OpenFile extends OtherTools {
             //to properly scale, it have be scaled by ratio of longer side
 
             return {
-                x: imageWidth * toatlSizeRatio,
-                y: imageHeight * toatlSizeRatio
+                x: imageWidth * toatlSizeRatio - 20, // "20" width of margin
+                y: imageHeight * toatlSizeRatio - 20
             }
         } else {
             return {
@@ -27,22 +32,42 @@ class OpenFile extends OtherTools {
             }
         }
     }
+
+    clearFileInStorage() {
+        this.element.value = "";
+    }
+    
     
     loadFile() {
-        const file = this.element.files[0];
-        const imageObj = new Image();
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
+        let loadEventHandler;
+        this.createContentElement();
         
-        reader.onload = function() {
-            imageObj.src = reader.result;
-        };
+        const file = this.element.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
 
-        imageObj.onload = () => {
-            const imageSize = this.checkSizeImage(imageObj);
-            this.canvas.ctx.drawImage(imageObj, 0, 0, imageSize.x, imageSize.y);
-        }
+        reader.onload = function() {
+            this.elementToDraw.src = reader.result;
+        }.bind(this);
+
+        this.elementToDraw.onload = function() {
+            const imageSize = this.checkSizeImage(this.elementToDraw);
+            this.elementToDraw.style.width = `${imageSize.x}px`;
+            this.elementToDraw.style.height = `${imageSize.y}px`;
+
+            this.showContentElement();
+        }.bind(this)
+        
+
+        this.canvasElement.addEventListener("click", loadEventHandler = (e) => {
+
+            const positionToDraw = this.checkPositionOfElement();
+            this.deleteContentElement();
+            this.canvas.ctx.drawImage(this.elementToDraw, positionToDraw.x, positionToDraw.y, positionToDraw.width, positionToDraw.height);
+
+            this.canvasElement.removeEventListener("click", loadEventHandler);
+            this.clearFileInStorage();
+        });
 
         this.canvas.saveToHistory();
     }

@@ -1,8 +1,8 @@
-import movableElements from "../classes/movableElements_class.js";
+import MovableElements from "../classes/movableElements_class.js";
 
-class advancedTool extends movableElements {
-    constructor(elementButton, canvasObject, canvasElement = null) {
-        super(elementButton, canvasObject, canvasElement)
+class AdvancedTool extends movableElements {
+    constructor(elementButton, canvasObject, canvasElement = null, elementToCreate) {
+        super(elementButton, canvasObject, canvasElement, elementToCreate)
     }
 
     disableButton() {
@@ -17,4 +17,4 @@ class advancedTool extends movableElements {
     } 
 }
 
-export default advancedTool;
+export default AdvancedTool;
