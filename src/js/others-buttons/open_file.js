@@ -41,9 +41,10 @@ class OpenFile extends MovableElements {
     loadFile() {
         let loadEventHandler;
         this.createContentElement();
-        
+
         const file = this.element.files[0];
         const reader = new FileReader();
+        
         reader.readAsDataURL(file);
 
         reader.onload = function() {
@@ -65,11 +66,10 @@ class OpenFile extends MovableElements {
             this.deleteContentElement();
             this.canvas.ctx.drawImage(this.elementToDraw, positionToDraw.x, positionToDraw.y, positionToDraw.width, positionToDraw.height);
 
-            this.canvasElement.removeEventListener("click", loadEventHandler);
             this.clearFileInStorage();
+            this.canvas.saveToHistory();
+            this.canvasElement.removeEventListener(e.type, loadEventHandler);
         });
-
-        this.canvas.saveToHistory();
     }
 }
 

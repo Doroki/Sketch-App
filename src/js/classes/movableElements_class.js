@@ -22,11 +22,11 @@ class MovableElements {
 
 
     showContentElement(event) {
-        const e = event || {clientX: 0, clientY: 0};
+        const e = event || {clientX: 0, clientY: this.menuHeight};
         const wrapper = this.elementToDraw.parentElement;
         
         this.lastCursorX = e.clientX - 10;
-        this.lastCursorY = e.clientY - 10 + this.menuHeight;
+        this.lastCursorY = e.clientY - 10;
 
         wrapper.style.top = `${this.lastCursorY}px`;
         wrapper.style.left = `${this.lastCursorX}px`;
@@ -47,11 +47,14 @@ class MovableElements {
         background-color: transparent;
         z-index: 500;`);
         
-
+        this.elementToDraw.id = "selection";
         this.elementToDraw.setAttribute(`style`,
-        `border: 2px dashed #000;
+        `display: inline-block;
+        border: 2px dashed #000;
         margin: 10px;
         padding: 0px;
+        min-height: 100px;
+        min-width: 100px;
         background-color: transparent;
         z-index: 5000;
         resize: none;`);
@@ -119,8 +122,8 @@ class MovableElements {
 
     resizeElement(e, x, y, container) {
 
-        let cursorPositionY = e.clientY - y - 25;
-        let cursorPositionX = e.clientX - x - 25;
+        let cursorPositionY = e.clientY - y  - 25;
+        let cursorPositionX = e.clientX - x  - 25;
 
         this.elementToDraw.style.width = cursorPositionX + "px";
         this.elementToDraw.style.height = cursorPositionY + "px";
@@ -157,15 +160,19 @@ class MovableElements {
         document.addEventListener("mousemove", mouseMoveHandler = (e) => this.moveElement(e, cursorPositionX, cursorPositionY, element));
     }
 
-    moveElement(e, cursorPositionX, cursorPositionY, element) {
+    moveElement(e, x, y, element) {
+        
 
-        cursorPositionX = this.lastCursorX  - e.clientX;
-        cursorPositionY = this.lastCursorY - e.clientY;
+        const cursorPositionX = this.lastCursorX - e.clientX;
+        const cursorPositionY = this.lastCursorY - e.clientY;
         this.lastCursorX  = e.clientX;
         this.lastCursorY = e.clientY;
 
-        element.style.top = (element.offsetTop - cursorPositionY) + "px";
-        element.style.left = (element.offsetLeft - cursorPositionX) + "px";
+        const newPositionX = (element.offsetLeft - cursorPositionX)
+        const newPositionY = (element.offsetTop - cursorPositionY)
+
+        element.style.top = newPositionY + "px";
+        element.style.left = newPositionX + "px";
     }
 
     dropElement(mouseUpHandler, mouseMoveHandler) {

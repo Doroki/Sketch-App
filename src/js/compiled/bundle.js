@@ -74,14 +74,11 @@ var _canvas_class = __webpack_require__(1);
 
 var _canvas_class2 = _interopRequireDefault(_canvas_class);
 
-var _open_file = __webpack_require__(2);
+var _select = __webpack_require__(2);
 
-var _open_file2 = _interopRequireDefault(_open_file);
+var _select2 = _interopRequireDefault(_select);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import DownloadCanvas from "./others-buttons/download";
-// import CanvasStorage from "./others-buttons/storage";
 
 // import Undo_Redo from "./others-buttons/undo_redo_class"
 
@@ -101,6 +98,10 @@ var menu = document.querySelector(".menu");
 // import ColorPickerTool from "./basic_tools/color_picker"; 
 // import ReactTool from "./basic_tools/rect"; 
 // import TextDrawTool from "./basic_tools/text"; 
+
+// import OpenFile from "./others-buttons/open_file";
+// import DownloadCanvas from "./others-buttons/download";
+// import CanvasStorage from "./others-buttons/storage";
 
 var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
@@ -127,13 +128,21 @@ var openFile = menu.querySelector("#get-file");
 
 var redoButton = menu.querySelector("#redo");
 var undoButton = menu.querySelector("#undo");
-var cutTool = menu.querySelector("#cut");
+
 var selectTool = menu.querySelector("#select");
+var cutTool = menu.querySelector("#cut");
 var copyTool = menu.querySelector("#copy");
+var pasteTool = menu.querySelector("#paste");
 
-/////----------------	OBJECTS ----------------------	/////
+var copyToolSet = {
+	selectTool: selectTool,
+	cutTool: cutTool,
+	copyTool: copyTool,
+	pasteTool: pasteTool
 
-var Sketch = new _canvas_class2.default(canvasElement, workSpaceWidth, workSpaceHeight);
+	/////----------------	OBJECTS ----------------------	/////
+
+};var Sketch = new _canvas_class2.default(canvasElement, workSpaceWidth, workSpaceHeight);
 
 // const Brush = new BrushTool(brushButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
 // const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
@@ -144,10 +153,11 @@ var Sketch = new _canvas_class2.default(canvasElement, workSpaceWidth, workSpace
 
 // const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
 // const DownloadImage = new DownloadCanvas(download, canvasElement);
-var LoadFile = new _open_file2.default(openFile, Sketch, canvasElement, "img");
+// const LoadFile = new OpenFile(openFile, Sketch, canvasElement, "img");
 
 // const DrawHistory = new Undo_Redo(Sketch);
-// const SelectArea;
+var SelectArea = new _select2.default(copyToolSet, Sketch, canvasElement, "div");
+
 // const CutImage;
 // const CopyImage;
 
@@ -184,18 +194,25 @@ function changeFontSize() {
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 fontSize.addEventListener("change", changeFontSize);
-textButton.addEventListener("click", function () {
-	return TextTool.use();
-});
+// textButton.addEventListener("click", () => TextTool.use())
 
 // save.addEventListener("click", () => SketchStorage.save());
 // download.addEventListener("click", () => DownloadImage.downloadCanvas());
-openFile.addEventListener("change", function () {
-	LoadFile.loadFile();
-});
+// openFile.addEventListener("change", function() {LoadFile.loadFile()});
 // redoButton.addEventListener("click", () => DrawHistory.redo());
 // undoButton.addEventListener("click", () => DrawHistory.undo());
-
+selectTool.addEventListener("click", function () {
+	return SelectArea.activeSelection();
+});
+cutTool.addEventListener("click", function () {
+	return SelectArea.cutSelectedArea();
+});
+copyTool.addEventListener("click", function () {
+	return SelectArea.copySelectedArea();
+});
+pasteTool.addEventListener("click", function () {
+	return SelectArea.pasteCopiedArea();
+});
 
 // function disableButton(e) {
 // 	let buttonID = document.querySelector("[data-usage=true]").id;
@@ -388,61 +405,22 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var OpenFile = function (_MovableElements) {
-    _inherits(OpenFile, _MovableElements);
+var SelectCanvasArea = function (_MovableElements) {
+    _inherits(SelectCanvasArea, _MovableElements);
 
-    function OpenFile(buttonElement, canvas, canvasElement, elementToCreate) {
-        _classCallCheck(this, OpenFile);
+    function SelectCanvasArea(buttonElement, canvas, canvasElement, elementToCreate) {
+        _classCallCheck(this, SelectCanvasArea);
 
-        return _possibleConstructorReturn(this, (OpenFile.__proto__ || Object.getPrototypeOf(OpenFile)).call(this, buttonElement, canvas, canvasElement, elementToCreate));
+        var _this = _possibleConstructorReturn(this, (SelectCanvasArea.__proto__ || Object.getPrototypeOf(SelectCanvasArea)).call(this, buttonElement, canvas, canvasElement, elementToCreate));
+
+        _this.copyMemory;
+        return _this;
     }
 
-    _createClass(OpenFile, [{
-        key: "checkSizeImage",
-        value: function checkSizeImage(image) {
-            var canvasHeight = this.canvas.canvasArea.clientHeight;
-            var canvasWidth = this.canvas.canvasArea.clientWidth;
-            var imageWidth = image.naturalWidth;
-            var imageHeight = image.naturalHeight;
-
-            if (imageWidth > canvasWidth || imageHeight > canvasHeight) {
-                var widthRatio = canvasWidth / imageWidth;
-                var heightRatio = canvasHeight / imageHeight;
-
-                var toatlSizeRatio = Math.min(widthRatio, heightRatio); //it always will be fraction, smaller fraction will show longer side of image;
-                //to properly scale, it have be scaled by ratio of longer side
-
-                return {
-                    x: imageWidth * toatlSizeRatio - 20, // "20" width of margin
-                    y: imageHeight * toatlSizeRatio - 20
-                };
-            } else {
-                return {
-                    x: imageWidth,
-                    y: imageHeight
-                };
-            }
-        }
-    }, {
-        key: "clearFileInStorage",
-        value: function clearFileInStorage() {
-            this.element.value = "";
-        }
-    }, {
-        key: "loadFile",
-        value: function loadFile() {
-            var _this2 = this;
-
-            var _loadEventHandler = void 0;
-            this.createContentElement();
-
-            var file = this.element.files[0];
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            reader.onload = function () {
-                this.elementToDraw.src = reader.result;
-            }.bind(this);
+    _createClass(SelectCanvasArea, [{
+        key: "createSelectArea",
+        value: function createSelectArea() {
+            var loadEventHandler = void 0;
 
             this.elementToDraw.onload = function () {
                 var imageSize = this.checkSizeImage(this.elementToDraw);
@@ -451,25 +429,76 @@ var OpenFile = function (_MovableElements) {
 
                 this.showContentElement();
             }.bind(this);
+        }
+    }, {
+        key: "enablePasteButton",
+        value: function enablePasteButton() {
+            this.element.pasteTool.removeAttribute("disabled");
+            this.element.pasteTool.classList.remove("menu__button--disabled");
+        }
+    }, {
+        key: "enableCopyButtons",
+        value: function enableCopyButtons() {
+            this.element.copyTool.removeAttribute("disabled");
+            this.element.cutTool.removeAttribute("disabled");
+            this.element.copyTool.classList.remove("menu__button--disabled");
+            this.element.cutTool.classList.remove("menu__button--disabled");
+        }
+    }, {
+        key: "disableCopyButtons",
+        value: function disableCopyButtons() {
+            this.element.copyTool.setAttribute("disabled", "disabled");
+            this.element.cutTool.setAttribute("disabled", "disabled");
+            this.element.copyTool.classList.add("menu__button--disabled");
+            this.element.cutTool.classList.add("menu__button--disabled");
+        }
+    }, {
+        key: "copySelectedArea",
+        value: function copySelectedArea() {
+            var areaPositionToCopy = this.checkPositionOfElement();
+            this.copyMemory = this.canvas.ctx.getImageData(areaPositionToCopy.x, areaPositionToCopy.y, areaPositionToCopy.width, areaPositionToCopy.height);
+            this.enablePasteButton();
 
-            this.canvasElement.addEventListener("click", _loadEventHandler = function loadEventHandler(e) {
-
-                var positionToDraw = _this2.checkPositionOfElement();
-                _this2.deleteContentElement();
-                _this2.canvas.ctx.drawImage(_this2.elementToDraw, positionToDraw.x, positionToDraw.y, positionToDraw.width, positionToDraw.height);
-
-                _this2.canvasElement.removeEventListener("click", _loadEventHandler);
-                _this2.clearFileInStorage();
-            });
-
+            return areaPositionToCopy;
+        }
+    }, {
+        key: "cutSelectedArea",
+        value: function cutSelectedArea() {
+            var cordsToClear = this.copySelectedArea();
+            this.canvas.ctx.clearRect(cordsToClear.x, cordsToClear.y, cordsToClear.width, cordsToClear.height);
+        }
+    }, {
+        key: "pasteCopiedArea",
+        value: function pasteCopiedArea() {
+            this.canvas.ctx.putImageData(this.copyMemory, 0, 0);
+            this.deactiveSelection();
             this.canvas.saveToHistory();
+        }
+    }, {
+        key: "activeSelection",
+        value: function activeSelection() {
+            var _this2 = this;
+
+            this.createContentElement();
+            this.canvasElement.addEventListener("click", this.clickEventHandler = function (e) {
+                _this2.showContentElement(e);
+                _this2.enableCopyButtons();
+                _this2.canvasElement.addEventListener("click", _this2.deactiveSelection.bind(_this2));
+            });
+        }
+    }, {
+        key: "deactiveSelection",
+        value: function deactiveSelection() {
+            this.deleteContentElement();
+            this.disableCopyButtons();
+            this.canvasElement.removeEventListener("click", this.clickEventHandler.bind(this));
         }
     }]);
 
-    return OpenFile;
+    return SelectCanvasArea;
 }(_movableElements_class2.default);
 
-exports.default = OpenFile;
+exports.default = SelectCanvasArea;
 
 /***/ }),
 /* 3 */
@@ -510,11 +539,11 @@ var MovableElements = function () {
     _createClass(MovableElements, [{
         key: "showContentElement",
         value: function showContentElement(event) {
-            var e = event || { clientX: 0, clientY: 0 };
+            var e = event || { clientX: 0, clientY: this.menuHeight };
             var wrapper = this.elementToDraw.parentElement;
 
             this.lastCursorX = e.clientX - 10;
-            this.lastCursorY = e.clientY - 10 + this.menuHeight;
+            this.lastCursorY = e.clientY - 10;
 
             wrapper.style.top = this.lastCursorY + "px";
             wrapper.style.left = this.lastCursorX + "px";
@@ -531,7 +560,8 @@ var MovableElements = function () {
 
             wrapper.setAttribute("style", "position: absolute;\n        top: 100px;\n        left: 100px;\n        background-color: transparent;\n        z-index: 500;");
 
-            this.elementToDraw.setAttribute("style", "border: 2px dashed #000;\n        margin: 10px;\n        padding: 0px;\n        background-color: transparent;\n        z-index: 5000;\n        resize: none;");
+            this.elementToDraw.id = "selection";
+            this.elementToDraw.setAttribute("style", "display: inline-block;\n        border: 2px dashed #000;\n        margin: 10px;\n        padding: 0px;\n        min-height: 100px;\n        min-width: 100px;\n        background-color: transparent;\n        z-index: 5000;\n        resize: none;");
 
             resizeHandler.setAttribute("style", "display: inline-block;\n        width: 20px;\n        height: 20px;\n        border: 2px dashed #000;\n        background-color: #000;\n        margin-right: -20px;\n        margin-bottom: -20px;\n        z-index: 5000;");
 
@@ -648,15 +678,18 @@ var MovableElements = function () {
         }
     }, {
         key: "moveElement",
-        value: function moveElement(e, cursorPositionX, cursorPositionY, element) {
+        value: function moveElement(e, x, y, element) {
 
-            cursorPositionX = this.lastCursorX - e.clientX;
-            cursorPositionY = this.lastCursorY - e.clientY;
+            var cursorPositionX = this.lastCursorX - e.clientX;
+            var cursorPositionY = this.lastCursorY - e.clientY;
             this.lastCursorX = e.clientX;
             this.lastCursorY = e.clientY;
 
-            element.style.top = element.offsetTop - cursorPositionY + "px";
-            element.style.left = element.offsetLeft - cursorPositionX + "px";
+            var newPositionX = element.offsetLeft - cursorPositionX;
+            var newPositionY = element.offsetTop - cursorPositionY;
+
+            element.style.top = newPositionY + "px";
+            element.style.left = newPositionX + "px";
         }
     }, {
         key: "dropElement",

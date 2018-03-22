@@ -8,10 +8,11 @@ import Canvas from "./classes/canvas_class"; // Class of Canvas element
 // import ReactTool from "./basic_tools/rect"; 
 // import TextDrawTool from "./basic_tools/text"; 
 
-import OpenFile from "./others-buttons/open_file";
+// import OpenFile from "./others-buttons/open_file";
 // import DownloadCanvas from "./others-buttons/download";
 // import CanvasStorage from "./others-buttons/storage";
 
+import SelectCanvasArea from "./others-buttons/select";
 // import Undo_Redo from "./others-buttons/undo_redo_class"
 
 
@@ -46,9 +47,18 @@ const openFile = menu.querySelector("#get-file");
 
 const redoButton = menu.querySelector("#redo");
 const undoButton = menu.querySelector("#undo");
-const cutTool = menu.querySelector("#cut");
+
 const selectTool = menu.querySelector("#select");
+const cutTool = menu.querySelector("#cut");
 const copyTool = menu.querySelector("#copy");
+const pasteTool = menu.querySelector("#paste");
+
+const copyToolSet = {
+	selectTool,
+	cutTool,
+	copyTool,
+	pasteTool
+}
 
 /////----------------	OBJECTS ----------------------	/////
 
@@ -63,10 +73,11 @@ const Sketch = new Canvas(canvasElement, workSpaceWidth, workSpaceHeight);
 
 // const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
 // const DownloadImage = new DownloadCanvas(download, canvasElement);
-const LoadFile = new OpenFile(openFile, Sketch, canvasElement, "img");
+// const LoadFile = new OpenFile(openFile, Sketch, canvasElement, "img");
 
 // const DrawHistory = new Undo_Redo(Sketch);
-// const SelectArea;
+const SelectArea = new SelectCanvasArea(copyToolSet, Sketch, canvasElement, "div");
+
 // const CutImage;
 // const CopyImage;
 
@@ -104,14 +115,17 @@ function changeFontSize() {
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 fontSize.addEventListener("change", changeFontSize);
-textButton.addEventListener("click", () => TextTool.use())
+// textButton.addEventListener("click", () => TextTool.use())
 
 // save.addEventListener("click", () => SketchStorage.save());
 // download.addEventListener("click", () => DownloadImage.downloadCanvas());
-openFile.addEventListener("change", function() {LoadFile.loadFile()});
+// openFile.addEventListener("change", function() {LoadFile.loadFile()});
 // redoButton.addEventListener("click", () => DrawHistory.redo());
 // undoButton.addEventListener("click", () => DrawHistory.undo());
-
+selectTool.addEventListener("click", () => SelectArea.activeSelection());
+cutTool.addEventListener("click", () => SelectArea.cutSelectedArea());
+copyTool.addEventListener("click", () => SelectArea.copySelectedArea());
+pasteTool.addEventListener("click", () => SelectArea.pasteCopiedArea());
 
 // function disableButton(e) {
 // 	let buttonID = document.querySelector("[data-usage=true]").id;
