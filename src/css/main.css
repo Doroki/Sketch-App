@@ -69,6 +69,8 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  position: relative;
+  z-index: 1000;
   width: 100%;
   background-color: #cfd8dc;
   -webkit-box-shadow: 0px 0px 15px 0px #263238;
@@ -128,11 +130,14 @@ body {
               box-shadow: 0px 0px 5px 0px #263238;
       background-color: #90A4AE;
       color: #eceff1; }
-    .menu__button:hover {
+    .menu__button--disabled {
+      color: #a8bac3; }
+    .menu__button:hover:not(.menu__button--disabled) {
       -webkit-box-shadow: 0px 0px 4px 0px #263238;
               box-shadow: 0px 0px 4px 0px #263238;
       background-color: #d8dfe2;
-      color: #263238; }
+      color: #263238;
+      cursor: pointer; }
     .menu__button input[type="file"] {
       display: none; }
   .menu__size {

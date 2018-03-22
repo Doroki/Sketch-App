@@ -16,6 +16,8 @@ body {
 
 .menu {
 	display: flex;
+	position:relative;
+	z-index: 1000;
 	width: 100%;
 	background-color: #cfd8dc;
 	box-shadow: 0px 0px 15px 0px rgba(38, 50, 56, 1);
@@ -65,11 +67,16 @@ body {
 			background-color: #90A4AE;
 			color: #eceff1;
 		}
+
+		&--disabled {
+			color: lighten(#607D8B, 25%);
+		}
 		
-		&:hover {
+		&:hover:not(.menu__button--disabled) {
 			box-shadow: 0px 0px 4px 0px rgba(38, 50, 56, 1);
 			background-color: lighten(#cfd8dc, 3%);
 			color: #263238;
+			cursor: pointer;
 		}
 
 		input[type="file"] {
