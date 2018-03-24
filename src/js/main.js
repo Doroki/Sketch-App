@@ -1,19 +1,19 @@
 ///// IMPORT FILES /////
 import Canvas from "./classes/canvas_class"; // Class of Canvas element
 
-// import BrushTool from "./basic_tools/brush";
-// import EaserTool from "./basic_tools/easer";
-// import SprayTool from "./basic_tools/spray";  
-// import ColorPickerTool from "./basic_tools/color_picker"; 
-// import ReactTool from "./basic_tools/rect"; 
-// import TextDrawTool from "./basic_tools/text"; 
+import BrushTool from "./basic_tools/brush";
+import EaserTool from "./basic_tools/easer";
+import SprayTool from "./basic_tools/spray";  
+import ColorPickerTool from "./basic_tools/color_picker"; 
+import ReactTool from "./basic_tools/rect"; 
+import TextDrawTool from "./basic_tools/text"; 
 
-// import OpenFile from "./others-buttons/open_file";
-// import DownloadCanvas from "./others-buttons/download";
-// import CanvasStorage from "./others-buttons/storage";
+import OpenFile from "./others-buttons/open_file";
+import DownloadCanvas from "./others-buttons/download";
+import CanvasStorage from "./others-buttons/storage";
 
 import SelectCanvasArea from "./others-buttons/select";
-// import Undo_Redo from "./others-buttons/undo_redo_class"
+import Undo_Redo from "./others-buttons/undo_redo_class"
 
 
 /////----------------	ELEMENT HANDLERS ----------------------	/////
@@ -48,7 +48,7 @@ const openFile = menu.querySelector("#get-file");
 const redoButton = menu.querySelector("#redo");
 const undoButton = menu.querySelector("#undo");
 
-const selectTool = menu.querySelector("#select");
+const selectTool = menu.querySelector("#Select");
 const cutTool = menu.querySelector("#cut");
 const copyTool = menu.querySelector("#copy");
 const pasteTool = menu.querySelector("#paste");
@@ -64,22 +64,19 @@ const copyToolSet = {
 
 const Sketch = new Canvas(canvasElement, workSpaceWidth, workSpaceHeight);
 
-// const Brush = new BrushTool(brushButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-// const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-// const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
-// const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-// const TextTool = new TextDrawTool(textButton, Sketch, canvasElement, "textarea");
+const Brush = new BrushTool(brushButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
+const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+const TextTool = new TextDrawTool(textButton, Sketch, canvasElement, "textarea");
 // const Rect;
 
-// const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
-// const DownloadImage = new DownloadCanvas(download, canvasElement);
-// const LoadFile = new OpenFile(openFile, Sketch, canvasElement, "img");
+const SketchStorage = new CanvasStorage(save, Sketch, canvasElement);
+const DownloadImage = new DownloadCanvas(download, canvasElement);
+const LoadFile = new OpenFile(openFile, Sketch, canvasElement, "img");
 
-// const DrawHistory = new Undo_Redo(Sketch);
+const DrawHistory = new Undo_Redo(Sketch);
 const SelectArea = new SelectCanvasArea(copyToolSet, Sketch, canvasElement, "div");
-
-// const CutImage;
-// const CopyImage;
 
 
 // /////////////////////////////////////////////////
@@ -100,56 +97,60 @@ function changeFontSize() {
 
 /////----------------	TOOLSET FOR EVENT LISTENER (ENABLE / DISABLE BUTTON)   --------------------/////
 
-// const toolSet = {
-// 	"Brush": Brush,
-// 	"Easer": Easer,
-// 	"Color-Picker": ColorPicker,
-// 	"Spray": Spray
-// 	// "Rect": Rect
-// }
+const toolSet = {
+	"Brush": Brush,
+	"Easer": Easer,
+	"Color-Picker": ColorPicker,
+	"Spray": Spray,
+	// "Rect": Rect
+	"Select": SelectArea
+}
 
 /////----------------	EVENT LISTENERS  ----------------------	/////
 
-// window.addEventListener('load', () => SketchStorage.checkStorage());
+window.addEventListener('load', () => SketchStorage.checkStorage());
 
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 fontSize.addEventListener("change", changeFontSize);
-// textButton.addEventListener("click", () => TextTool.use())
 
-// save.addEventListener("click", () => SketchStorage.save());
-// download.addEventListener("click", () => DownloadImage.downloadCanvas());
-// openFile.addEventListener("change", function() {LoadFile.loadFile()});
-// redoButton.addEventListener("click", () => DrawHistory.redo());
-// undoButton.addEventListener("click", () => DrawHistory.undo());
-selectTool.addEventListener("click", () => SelectArea.activeSelection());
+textButton.addEventListener("click", () => TextTool.initTexting())
+
+save.addEventListener("click", () => SketchStorage.save());
+download.addEventListener("click", () => DownloadImage.downloadCanvas());
+openFile.addEventListener("change", function() {LoadFile.loadFile()});
+redoButton.addEventListener("click", () => DrawHistory.redo());
+undoButton.addEventListener("click", () => DrawHistory.undo());
+
+// -- "Copy / Paste" functionality -- //
+// selectTool.addEventListener("click", () => SelectArea.activeSelection());
 cutTool.addEventListener("click", () => SelectArea.cutSelectedArea());
 copyTool.addEventListener("click", () => SelectArea.copySelectedArea());
 pasteTool.addEventListener("click", () => SelectArea.pasteCopiedArea());
 
-// function disableButton(e) {
-// 	let buttonID = document.querySelector("[data-usage=true]").id;
-// 	let toolToDisable = toolSet[buttonID];
+function disableButton(e) {
+	let buttonID = document.querySelector("[data-usage=true]").id;
+	let toolToDisable = toolSet[buttonID];
 	
-// 	toolToDisable.disableButton();
-// 	toolToDisable.inactive();
-// }
+	toolToDisable.disableButton();
+	toolToDisable.inactive();
+}
 
-// function enableButton(e) {
-// 	let buttonID = e.target.id;
-// 	let toolToActive = toolSet[buttonID];
+function enableButton(e) {
+	let buttonID = e.target.id;
+	let toolToActive = toolSet[buttonID];
 
-// 	toolToActive.enableButton();
-// 	toolToActive.active();
-// }
+	toolToActive.enableButton();
+	toolToActive.active();
+}
 
-// function useButton(e) {
-// 	disableButton(e);
-// 	enableButton(e);
-// }
+function useButton(e) {
+	disableButton(e);
+	enableButton(e);
+}
 
-// menu.addEventListener("click", e => {
-// 	if(e.target.hasAttribute("data-usage")){
-// 		useButton(e);	
-// 	}
-// });
+menu.addEventListener("click", e => {
+	if(e.target.hasAttribute("data-usage")){
+		useButton(e);	
+	}
+});

@@ -32,12 +32,13 @@ class MovableElements {
         wrapper.style.left = `${this.lastCursorX}px`;
 
         document.querySelector("body").appendChild(wrapper);
+        // this.initResizeEvent(event, wrapper);
     }
 
-    createContentElement() {
+    createContentElement(tag) {
 
         const wrapper = document.createElement("div");
-        this.elementToDraw = document.createElement(`${this.elementToCreate}`);
+        this.elementToDraw = document.createElement(tag || `${this.elementToCreate}`);
         const resizeHandler = document.createElement("span");
 
         wrapper.setAttribute(`style`,
@@ -53,8 +54,8 @@ class MovableElements {
         border: 2px dashed #000;
         margin: 10px;
         padding: 0px;
-        min-height: 100px;
-        min-width: 100px;
+        width: 0;
+        height: 0;
         background-color: transparent;
         z-index: 5000;
         resize: none;`);
@@ -145,7 +146,7 @@ class MovableElements {
 
         this.elementToDraw.addEventListener("mousedown", (e) => {
             e.preventDefault();
-           this.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper)
+            this.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper)
         })
     }
 
@@ -156,6 +157,9 @@ class MovableElements {
         this.lastCursorX = e.clientX;
         this.lastCursorY = e.clientY;
 
+        this.newPositionX = element.offsetLeft;
+        this.newPositionY = element.offsetTop;
+        
         document.addEventListener("mouseup", mouseUpHandler = () => this.dropElement(mouseUpHandler, mouseMoveHandler));
         document.addEventListener("mousemove", mouseMoveHandler = (e) => this.moveElement(e, cursorPositionX, cursorPositionY, element));
     }
@@ -168,11 +172,14 @@ class MovableElements {
         this.lastCursorX  = e.clientX;
         this.lastCursorY = e.clientY;
 
-        const newPositionX = (element.offsetLeft - cursorPositionX)
-        const newPositionY = (element.offsetTop - cursorPositionY)
 
-        element.style.top = newPositionY + "px";
-        element.style.left = newPositionX + "px";
+        this.newPositionX = (this.newPositionX - cursorPositionX)
+        this.newPositionY = (this.newPositionY - cursorPositionY)
+
+        element.style.top = this.newPositionY + "px";
+        element.style.left = this.newPositionX + "px";
+
+
     }
 
     dropElement(mouseUpHandler, mouseMoveHandler) {
@@ -181,18 +188,6 @@ class MovableElements {
         document.removeEventListener("mousemove", mouseMoveHandler);
 
         this.checkPositionOfElement();
-    }
-
-    use() {
-        this.canvasElement.addEventListener("click", (e) => {
-            if(this.isFieldOn) {
-                this.deleteContentElement();
-                this.isFieldOn = false;
-            } else {
-                this.showContentElement(e);
-                this.isFieldOn = true;
-            }
-        });
     }
 }
 

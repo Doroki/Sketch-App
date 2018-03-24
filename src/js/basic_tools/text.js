@@ -1,8 +1,9 @@
-import advancedTools from "../classes/advancedTools.js";
+import AdvancedTools from "../classes/advancedTools.js";
 
-class TextDrawTool extends advancedTools {
+class TextDrawTool extends AdvancedTools {
     constructor(elementButton, canvasObject, canvasElement, elementToCreate) {
         super(elementButton, canvasObject, canvasElement, elementToCreate)
+        this.button = this.element;
 
         this.textPropety = {
             fontFamily: "sans-serif",
@@ -11,8 +12,6 @@ class TextDrawTool extends advancedTools {
             fontStyle: "normal",
             fontWeight: "normal"
         }
-
-        this.initTexting();
     }
 
     setTextStyle(properties) {
@@ -45,14 +44,48 @@ class TextDrawTool extends advancedTools {
     }
 
     initTexting() {
-        this.canvasElement.addEventListener("click", (e) => {
-            if(!this.isFieldOn) {
-                // this.useTextStyle();
-                return;
+        this.canvasElement.addEventListener("mousedown", (e) => {
+            if(this.isFieldOn) {
+                this.createContentElement();
+                this.showContentElement(e);
             }
-
-            this.drawText();
+            else {
+                
+            }
+            this.canvasElement.addEventListener("click", function() {
+                this.drawText();
+                this.deleteContentElement();
+            }.bind(this));
         });
+        // this.canvasElement.addEventListener("click", (e) => {
+        //     if(!this.isFieldOn) {
+        //         // this.useTextStyle();
+        //         return;
+        //     }
+
+        //     this.drawText();
+        // });
+    }
+
+    activeSelection() {
+
+        this.canvasElement.addEventListener("mousedown", this.clickEventHandler = e => {
+
+            this.createContentElement();
+            this.showContentElement(e);
+            // this.enableCopyButtons();
+            this.initResizeEvent(e, this.elementToDraw.parentElement);
+
+            this.canvasElement.removeEventListener("mousedown", this.clickEventHandler);
+            document.addEventListener("click", this.deactiveSelection.bind(this));
+        });
+    }
+
+    deactiveSelection() {
+        this.deleteContentElement();
+        this.disableCopyButtons();
+
+        this.canvasElement.addEventListener("mousedown", this.clickEventHandler);
     }
 }
 

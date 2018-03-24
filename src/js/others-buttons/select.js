@@ -1,23 +1,18 @@
-import MovableElements from "../classes/movableElements_class.js";
+import AdvancedTools from "../classes/advancedTools.js";
 
-class SelectCanvasArea extends MovableElements {
+class SelectCanvasArea extends AdvancedTools {
     constructor(buttonElement, canvas, canvasElement, elementToCreate) {
         super(buttonElement, canvas, canvasElement, elementToCreate);
         this.copyMemory;
+        this.button = this.element.selectTool;
     }
 
-    createSelectArea() {
-        let loadEventHandler;
-        
-        this.elementToDraw.onload = function() {
-            const imageSize = this.checkSizeImage(this.elementToDraw);
-            this.elementToDraw.style.width = `${imageSize.x}px`;
-            this.elementToDraw.style.height = `${imageSize.y}px`;
-
-            this.showContentElement();
-        }.bind(this)
+    removeSelection() {
+        this.deleteContentElement();
+        this.disableCopyButtons(); 
     }
 
+    //// ---------  COPY / PASTE / CUT BUTTONS ----------- /////
     enablePasteButton() {
         this.element.pasteTool.removeAttribute("disabled");
         this.element.pasteTool.classList.remove("menu__button--disabled");
@@ -50,28 +45,69 @@ class SelectCanvasArea extends MovableElements {
         this.canvas.ctx.clearRect(cordsToClear.x, cordsToClear.y, cordsToClear.width, cordsToClear.height);
     }
 
+    loadCopiedImg() {
+        this.createContentElement("img");
+        console.dir(this.copyMemory.length)
+        this.elementToDraw.src = this.copyMemory;
+
+        var imageArr = this.copyMemory.data
+        var imageData = this.copyMemory; //Your image data array
+        var images = []; //completed images
+        
+        for (let i = 0; i < imageArr.length; i++) { //Each block of canvas image
+            var temp = "";
+            for (let j = 0; j < imageArr[i].length; j++) { //Each byte
+                temp += String.fromCharCode(imageArr[i][j]);
+                console.log(temp);
+            }
+            // var encoded = generatePng(imageArr[i].width, imageArr[i].height, temp);
+            // images.push("data:image/png;base64," + btoa(encoded)); //Push to final array
+        }
+        console.dir(images)
+        
+    }
+
     pasteCopiedArea() {
         this.canvas.ctx.putImageData(this.copyMemory, 0, 0);
-        this.deactiveSelection()
+        this.removeSelection();
+        this.loadCopiedImg();
         this.canvas.saveToHistory();
     }
 
+    //// ---------  EVENTS ----------- /////
 
-    activeSelection() {
-        this.createContentElement();
-        this.canvasElement.addEventListener("click", this.clickEventHandler = (e) => {
-            this.showContentElement(e);
-            this.enableCopyButtons();
-            this.canvasElement.addEventListener("click", this.deactiveSelection.bind(this));
+
+
+    bindEvents() {
+        this.canvasElement.addEventListener("mousedown", this.mdownEventHandler = e => {
+
+            if (this.toolIsActive) {
+                this.removeSelection();
+                this.toolIsActive = false;
+            } else {
+                this.createContentElement();
+                this.showContentElement(e);
+                this.enableCopyButtons();
+                this.initResizeEvent(e, this.elementToDraw.parentElement);
+                this.toolIsActive = true;
+            }
         });
     }
 
-    deactiveSelection() {
-        this.deleteContentElement();
-        this.disableCopyButtons();
-        this.canvasElement.removeEventListener("click", this.clickEventHandler.bind(this));
+    unbindEvents() {
+        this.canvasElement.removeEventListener("mousedown", this.mdownEventHandler);
+        document.removeEventListener("mousedown", this.removeSelection);
     }
 
+    active() {
+        this.bindEvents();
+    }
+    
+    inactive() {
+        this.unbindEvents();
+        this.removeSelection();
+        this.toolIsActive = false;
+    }
 }
 
 export default SelectCanvasArea;
