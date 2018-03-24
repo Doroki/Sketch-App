@@ -31,7 +31,6 @@ class TextDrawTool extends AdvancedTools {
 
 
     drawText() {
-        console.log(this.pleaceToDraw.x +""+ this.pleaceToDraw.y)
         this.canvas.ctx.font=`
             ${this.textPropety.fontStyle}
             ${this.textPropety.fontWeight}
@@ -41,51 +40,42 @@ class TextDrawTool extends AdvancedTools {
         this.canvas.ctx.fillStyle = this.textPropety.textColor;
         // this.canvas.ctx.textAlign = "center";
         this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y);
+        this.canvas.saveToHistory();
     }
 
-    initTexting() {
-        this.canvasElement.addEventListener("mousedown", (e) => {
-            if(this.isFieldOn) {
-                this.createContentElement();
-                this.showContentElement(e);
-            }
-            else {
-                
-            }
-            this.canvasElement.addEventListener("click", function() {
+
+    bindEvents() {
+        this.canvasElement.addEventListener("mousedown", this.mdownEventHandler = e => {
+
+            if (this.toolIsActive) {
                 this.drawText();
                 this.deleteContentElement();
-            }.bind(this));
-        });
-        // this.canvasElement.addEventListener("click", (e) => {
-        //     if(!this.isFieldOn) {
-        //         // this.useTextStyle();
-        //         return;
-        //     }
-
-        //     this.drawText();
-        // });
-    }
-
-    activeSelection() {
-
-        this.canvasElement.addEventListener("mousedown", this.clickEventHandler = e => {
-
-            this.createContentElement();
-            this.showContentElement(e);
-            // this.enableCopyButtons();
-            this.initResizeEvent(e, this.elementToDraw.parentElement);
-
-            this.canvasElement.removeEventListener("mousedown", this.clickEventHandler);
-            document.addEventListener("click", this.deactiveSelection.bind(this));
+                this.toolIsActive = false;
+            } else {
+                this.createContentElement();
+                this.showContentElement(e);
+                this.initResizeEvent(e, this.elementToDraw.parentElement);
+                this.toolIsActive = true;
+            }
         });
     }
 
-    deactiveSelection() {
+    unbindEvents() {
+        this.canvasElement.removeEventListener("mousedown", this.mdownEventHandler);
+        document.removeEventListener("mousedown", this.removeSelection);
+    }
+
+    active() {
+        if(this.toolIsActive) return;
+
+        this.bindEvents();
+    }
+    
+    inactive() {
+        if(this.toolIsActive) return;
+        this.unbindEvents();
         this.deleteContentElement();
-        this.disableCopyButtons();
-
-        this.canvasElement.addEventListener("mousedown", this.clickEventHandler);
+        this.toolIsActive = false;
     }
 }
 

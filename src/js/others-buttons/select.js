@@ -47,22 +47,19 @@ class SelectCanvasArea extends AdvancedTools {
 
     loadCopiedImg() {
         this.createContentElement("img");
-        console.dir(this.copyMemory.length)
         this.elementToDraw.src = this.copyMemory;
 
         var imageArr = this.copyMemory.data
         var imageData = this.copyMemory; //Your image data array
         var images = []; //completed images
-        
-        for (let i = 0; i < imageArr.length; i++) { //Each block of canvas image
-            var temp = "";
-            for (let j = 0; j < imageArr[i].length; j++) { //Each byte
-                temp += String.fromCharCode(imageArr[i][j]);
-                console.log(temp);
-            }
+        var temp;
+        // for (let i = 0; i < imageArr.length; i++) { //Each block of canvas image
+            // temp += String.fromCharCode(imageArr[i])
+            // images.push("data:image/png;base64," + btoa(temp)); //Push to final array
+
             // var encoded = generatePng(imageArr[i].width, imageArr[i].height, temp);
             // images.push("data:image/png;base64," + btoa(encoded)); //Push to final array
-        }
+        // }
         console.dir(images)
         
     }

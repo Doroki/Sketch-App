@@ -102,6 +102,7 @@ const toolSet = {
 	"Easer": Easer,
 	"Color-Picker": ColorPicker,
 	"Spray": Spray,
+	"Text": TextTool,
 	// "Rect": Rect
 	"Select": SelectArea
 }
@@ -114,8 +115,6 @@ toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 fontSize.addEventListener("change", changeFontSize);
 
-textButton.addEventListener("click", () => TextTool.initTexting())
-
 save.addEventListener("click", () => SketchStorage.save());
 download.addEventListener("click", () => DownloadImage.downloadCanvas());
 openFile.addEventListener("change", function() {LoadFile.loadFile()});
@@ -123,10 +122,10 @@ redoButton.addEventListener("click", () => DrawHistory.redo());
 undoButton.addEventListener("click", () => DrawHistory.undo());
 
 // -- "Copy / Paste" functionality -- //
-// selectTool.addEventListener("click", () => SelectArea.activeSelection());
 cutTool.addEventListener("click", () => SelectArea.cutSelectedArea());
 copyTool.addEventListener("click", () => SelectArea.copySelectedArea());
 pasteTool.addEventListener("click", () => SelectArea.pasteCopiedArea());
+
 
 function disableButton(e) {
 	let buttonID = document.querySelector("[data-usage=true]").id;

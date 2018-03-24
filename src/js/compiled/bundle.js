@@ -349,7 +349,7 @@ var MovableElements = function () {
             var cursorPositionY = void 0;
 
             this.elementToDraw.addEventListener("mousedown", function (e) {
-                e.preventDefault();
+                // e.preventDefault();
                 _this3.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper);
             });
         }
@@ -548,6 +548,7 @@ var toolSet = {
 	"Easer": Easer,
 	"Color-Picker": ColorPicker,
 	"Spray": Spray,
+	"Text": TextTool,
 	// "Rect": Rect
 	"Select": SelectArea
 
@@ -560,10 +561,6 @@ var toolSet = {
 toolSize.addEventListener("change", changeToolSize);
 toolColor.addEventListener("change", changeColor);
 fontSize.addEventListener("change", changeFontSize);
-
-textButton.addEventListener("click", function () {
-	return TextTool.initTexting();
-});
 
 save.addEventListener("click", function () {
 	return SketchStorage.save();
@@ -582,7 +579,6 @@ undoButton.addEventListener("click", function () {
 });
 
 // -- "Copy / Paste" functionality -- //
-// selectTool.addEventListener("click", () => SelectArea.activeSelection());
 cutTool.addEventListener("click", function () {
 	return SelectArea.cutSelectedArea();
 });
@@ -1176,60 +1172,52 @@ var TextDrawTool = function (_AdvancedTools) {
     }, {
         key: "drawText",
         value: function drawText() {
-            console.log(this.pleaceToDraw.x + "" + this.pleaceToDraw.y);
             this.canvas.ctx.font = "\n            " + this.textPropety.fontStyle + "\n            " + this.textPropety.fontWeight + "\n            " + this.textPropety.fontSize + "\n            " + this.textPropety.fontFamily;
 
             this.canvas.ctx.fillStyle = this.textPropety.textColor;
             // this.canvas.ctx.textAlign = "center";
             this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y);
+            this.canvas.saveToHistory();
         }
     }, {
-        key: "initTexting",
-        value: function initTexting() {
+        key: "bindEvents",
+        value: function bindEvents() {
             var _this2 = this;
 
-            this.canvasElement.addEventListener("mousedown", function (e) {
-                if (_this2.isFieldOn) {
+            this.canvasElement.addEventListener("mousedown", this.mdownEventHandler = function (e) {
+
+                if (_this2.toolIsActive) {
+                    _this2.drawText();
+                    _this2.deleteContentElement();
+                    _this2.toolIsActive = false;
+                } else {
                     _this2.createContentElement();
                     _this2.showContentElement(e);
-                } else {}
-                _this2.canvasElement.addEventListener("click", function () {
-                    this.drawText();
-                    this.deleteContentElement();
-                }.bind(_this2));
-            });
-            // this.canvasElement.addEventListener("click", (e) => {
-            //     if(!this.isFieldOn) {
-            //         // this.useTextStyle();
-            //         return;
-            //     }
-
-            //     this.drawText();
-            // });
-        }
-    }, {
-        key: "activeSelection",
-        value: function activeSelection() {
-            var _this3 = this;
-
-            this.canvasElement.addEventListener("mousedown", this.clickEventHandler = function (e) {
-
-                _this3.createContentElement();
-                _this3.showContentElement(e);
-                // this.enableCopyButtons();
-                _this3.initResizeEvent(e, _this3.elementToDraw.parentElement);
-
-                _this3.canvasElement.removeEventListener("mousedown", _this3.clickEventHandler);
-                document.addEventListener("click", _this3.deactiveSelection.bind(_this3));
+                    _this2.initResizeEvent(e, _this2.elementToDraw.parentElement);
+                    _this2.toolIsActive = true;
+                }
             });
         }
     }, {
-        key: "deactiveSelection",
-        value: function deactiveSelection() {
+        key: "unbindEvents",
+        value: function unbindEvents() {
+            this.canvasElement.removeEventListener("mousedown", this.mdownEventHandler);
+            document.removeEventListener("mousedown", this.removeSelection);
+        }
+    }, {
+        key: "active",
+        value: function active() {
+            if (this.toolIsActive) return;
+
+            this.bindEvents();
+        }
+    }, {
+        key: "inactive",
+        value: function inactive() {
+            if (this.toolIsActive) return;
+            this.unbindEvents();
             this.deleteContentElement();
-            this.disableCopyButtons();
-
-            this.canvasElement.addEventListener("mousedown", this.clickEventHandler);
+            this.toolIsActive = false;
         }
     }]);
 
@@ -1609,24 +1597,19 @@ var SelectCanvasArea = function (_AdvancedTools) {
         key: "loadCopiedImg",
         value: function loadCopiedImg() {
             this.createContentElement("img");
-            console.dir(this.copyMemory.length);
             this.elementToDraw.src = this.copyMemory;
 
             var imageArr = this.copyMemory.data;
             var imageData = this.copyMemory; //Your image data array
             var images = []; //completed images
+            var temp;
+            // for (let i = 0; i < imageArr.length; i++) { //Each block of canvas image
+            // temp += String.fromCharCode(imageArr[i])
+            // images.push("data:image/png;base64," + btoa(temp)); //Push to final array
 
-            for (var i = 0; i < imageArr.length; i++) {
-                //Each block of canvas image
-                var temp = "";
-                for (var j = 0; j < imageArr[i].length; j++) {
-                    //Each byte
-                    temp += String.fromCharCode(imageArr[i][j]);
-                    console.log(temp);
-                }
-                // var encoded = generatePng(imageArr[i].width, imageArr[i].height, temp);
-                // images.push("data:image/png;base64," + btoa(encoded)); //Push to final array
-            }
+            // var encoded = generatePng(imageArr[i].width, imageArr[i].height, temp);
+            // images.push("data:image/png;base64," + btoa(encoded)); //Push to final array
+            // }
             console.dir(images);
         }
     }, {

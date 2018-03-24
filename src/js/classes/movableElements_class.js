@@ -145,7 +145,7 @@ class MovableElements {
         let cursorPositionY;
 
         this.elementToDraw.addEventListener("mousedown", (e) => {
-            e.preventDefault();
+            // e.preventDefault();
             this.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper)
         })
     }
