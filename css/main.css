@@ -1,0 +1,260 @@
+/*=============================================
+=                  Reset CSS                  =
+=============================================*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, main, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+article, aside, details, figcaption, figure,
+footer, header, main, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  outline: none; }
+
+/*=====  End of Reset CSS  ======*/
+:root {
+  --canvas-cursor: default; }
+
+html,
+body {
+  height: 100%; }
+
+body {
+  background-color: #fff;
+  overflow: hidden; }
+
+.menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+  background-color: #cfd8dc;
+  -webkit-box-shadow: 0px 0px 15px 0px #263238;
+          box-shadow: 0px 0px 15px 0px #263238;
+  padding: 10px 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
+  .menu__container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    padding: 0 10px; }
+    .menu__container:not(:last-child) {
+      border-right: 1px solid #B0BEC5; }
+    .menu__container--bigger {
+      -webkit-box-flex: 2;
+          -ms-flex: 2;
+              flex: 2; }
+    .menu__container--smaller {
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      -webkit-box-flex: 0;
+          -ms-flex: 0;
+              flex: 0; }
+  .menu__button {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    width: 30%;
+    height: 50px;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    margin: 3px;
+    outline: none;
+    color: #607D8B;
+    -webkit-transition: color 0.3s linear, background-color 0.4s linear, -webkit-box-shadow 0.25s linear;
+    transition: color 0.3s linear, background-color 0.4s linear, -webkit-box-shadow 0.25s linear;
+    transition: box-shadow 0.25s linear, color 0.3s linear, background-color 0.4s linear;
+    transition: box-shadow 0.25s linear, color 0.3s linear, background-color 0.4s linear, -webkit-box-shadow 0.25s linear; }
+    .menu__button--bigger {
+      width: 30%;
+      height: 100%; }
+    .menu__button--smaller {
+      width: 25px;
+      height: 25px; }
+    .menu__button--active {
+      -webkit-box-shadow: 0px 0px 5px 0px #263238;
+              box-shadow: 0px 0px 5px 0px #263238;
+      background-color: #90A4AE;
+      color: #eceff1; }
+    .menu__button--disabled {
+      color: #a8bac3; }
+    .menu__button:hover:not(.menu__button--disabled) {
+      -webkit-box-shadow: 0px 0px 4px 0px #263238;
+              box-shadow: 0px 0px 4px 0px #263238;
+      background-color: #d8dfe2;
+      color: #263238;
+      cursor: pointer; }
+    .menu__button input[type="file"] {
+      display: none; }
+  .menu__color-btn {
+    border: 5px solid #eee;
+    padding: 0;
+    width: 35px;
+    height: 35px; }
+  .menu__size {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    color: #78909C; }
+    .menu__size > * {
+      margin: 10px;
+      border-radius: 5px;
+      width: 60px; }
+    .menu__size::after {
+      content: "SIZE";
+      font-size: 16px;
+      letter-spacing: 5px; }
+
+.fa-select::before {
+  content: "";
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: auto;
+  width: 30px;
+  height: 30px;
+  border: 3px dashed;
+  border-radius: 5px; }
+
+.color__example {
+  width: 25px;
+  height: 25px;
+  margin: 5px;
+  border: 5px solid #fff;
+  border-radius: 5px;
+  background-color: red; }
+
+.canvas {
+  cursor: var(--canvas-cursor); }
+
+.modal {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 5000;
+  padding: 15px;
+  line-height: 2em;
+  text-align: center;
+  background-color: #e67575;
+  border-radius: 8px; }
+  .modal__info {
+    width: 80%;
+    font-weight: bold;
+    color: #444; }
+  .modal__button {
+    width: 25%;
+    padding: 5px;
+    text-transform: capitalize;
+    background-color: #DDD;
+    border: none; }
+    .modal__button:hover {
+      background-color: #fff; }
+
+.wrapper {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  background-color: transparent;
+  z-index: 500; }
+
+.main-element {
+  display: inline-block;
+  border: 2px dashed #000;
+  margin: 10px;
+  padding: 0px;
+  resize: none;
+  width: 0;
+  height: 0;
+  background-color: transparent;
+  z-index: 5000; }
+
+.resizer {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px dashed #000;
+  background-color: #000;
+  margin-right: -20px;
+  margin-bottom: -20px;
+  z-index: 5000; }

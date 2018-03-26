@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sketch-APP</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/3d1630c864.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <section class="menu">
+        <div class="menu__container">
+            <button id="save" class="menu__button menu__button--bigger fa fa-floppy-o fa-3x"></button>
+            <a id="download" href="" class="menu__button menu__button--bigger fa fa-download fa-3x" download></a>
+            <label for="get-file" class="menu__button menu__button--bigger fa fa-folder-open-o fa-3x">
+                <input id="get-file" accept="image/*" type="file">
+            </label>
+        </div>
+        
+        <div class="menu__container">
+            <button id="cut" class="menu__button menu__button--disabled fa fa-scissors fa-2x" disabled></button>
+            <button id="copy" class="menu__button menu__button--disabled fa fa-clone fa-2x" disabled></button>
+            <button id="paste" class="menu__button menu__button--disabled fa fa-paste fa-2x" disabled></button>
+            <button id="undo" class="menu__button fa fa-undo fa-2x"></button>
+            <button id="Select" class="menu__button fa-select fa-2x" data-usage="false"></button>
+            <button id="redo" class="menu__button fa fa-repeat fa-2x"></button>
+        </div>
+        
+        <div id="paint" class="menu__container">
+             <button id="Brush" class="menu__button fa fa-paint-brush fa-2x" data-usage="true"></button>
+             <button id="Spray" class="menu__button fa fa-shower fa-2x" data-usage="false"></button>
+             <button id="Text" class="menu__button fa fa fa-font fa-2x" data-usage="false"></button>
+             <button id="Easer" class="menu__button fa fa-eraser fa-2x" data-usage="false"></button>
+             <button id="Color-Picker" class="menu__button fa fa-eyedropper fa-2x" data-usage="false"></button>
+        </div>
+    
+        <div class="menu__container">
+            <label for="tool-size" class="menu__size fa fa-paint-brush fa-2x">
+                <input id="tool-size" type="number" value="10" min="1" max="100">
+            </label>
+            <input type="color" id="color-field" class="menu__color-btn">
+        </div>
+        <div class="menu__container">
+            <label for="font-size" class="menu__size fa fa-font fa-2x">
+                <input id="font-size" type="number" value="12" min="1" max="100">
+            </label>
+            <input type="color" id="color-font" class="menu__color-btn">
+            <div class="menu__container menu__container--smaller">
+                <button id="bold" class="menu__button menu__button--smaller fa fa-bold fa-1x" data-active="false"></button>
+                <button id="italic" class="menu__button menu__button--smaller fa fa-italic fa-1x" data-active="false"></button>
+            </div>
+        </div>
+
+    </section>
+    <section style="position: relative;">
+    <canvas id="canvas" class="canvas" width="600px" height="300px">
+        Your browser doesn't support canvas :(
+    </canvas>
+</section>
+    <script src="./js/compiled/bundle.js"></script>
+</body>
+</html>
