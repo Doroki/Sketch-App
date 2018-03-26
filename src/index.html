@@ -33,18 +33,25 @@
              <button id="Text" class="menu__button fa fa fa-font fa-2x" data-usage="false"></button>
              <button id="Easer" class="menu__button fa fa-eraser fa-2x" data-usage="false"></button>
              <button id="Color-Picker" class="menu__button fa fa-eyedropper fa-2x" data-usage="false"></button>
-             <button id="Rect" class="menu__button fa fa fa-font fa-2x" data-usage="false"></button>
         </div>
     
         <div class="menu__container">
             <label for="tool-size" class="menu__size fa fa-paint-brush fa-2x">
-                <input id="tool-size" type="number" value="10" min="1" max="100">		
+                <input id="tool-size" type="number" value="10" min="1" max="100">
             </label>
+            <input type="color" id="color-field" class="menu__color-btn">
+        </div>
+        <div class="menu__container">
             <label for="font-size" class="menu__size fa fa-font fa-2x">
-                <input id="font-size" type="number" value="12" min="1" max="100">		
+                <input id="font-size" type="number" value="12" min="1" max="100">
             </label>
-            <input type="color" id="color-field" class="">
-        </div> 
+            <input type="color" id="color-font" class="menu__color-btn">
+            <div class="menu__container menu__container--smaller">
+                <button id="bold" class="menu__button menu__button--smaller fa fa-bold fa-1x" data-active="false"></button>
+                <button id="italic" class="menu__button menu__button--smaller fa fa-italic fa-1x" data-active="false"></button>
+            </div>
+        </div>
+
     </section>
     <section style="position: relative;">
     <canvas id="canvas" class="canvas" width="600px" height="300px">

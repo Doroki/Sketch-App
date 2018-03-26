@@ -39,6 +39,11 @@ body {
 		&--bigger {
 			flex: 2;
 		}
+
+		&--smaller {
+			flex-direction: column;
+			flex: 0;
+		}
 	}
 	
 	&__button {
@@ -60,6 +65,11 @@ body {
 		&--bigger {
 			width: 30%;
 			height: 100%;
+		}
+
+		&--smaller {
+			width: 25px;
+			height: 25px;
 		}
 		
 		&--active {
@@ -83,6 +93,13 @@ body {
 			display: none;
 		}
 	}
+
+	&__color-btn {
+		border: 5px solid #eee;
+		padding: 0;
+		width: 35px;
+		height: 35px;
+	}
 	
 	&__size {
 		display: flex;
@@ -93,6 +110,7 @@ body {
 		& > * {
 			margin: 10px;
 			border-radius: 5px;
+			width: 60px;
 		}
 		
 		&::after {
@@ -159,3 +177,35 @@ body {
 		}
 	}
 }
+
+.wrapper {
+	position: absolute;
+	top: 100px;
+	left: 100px;
+	background-color: transparent;
+	z-index: 500;
+}
+
+.main-element {
+	display: inline-block;
+	border: 2px dashed #000;
+	margin: 10px;
+	padding: 0px;
+	resize: none;
+	width: 0;
+	height: 0;
+	background-color: transparent;
+	z-index: 5000;
+}
+
+.resizer {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border: 2px dashed #000;
+	background-color: #000;
+	margin-right: -20px;
+	margin-bottom: -20px;
+	z-index: 5000;
+}
+

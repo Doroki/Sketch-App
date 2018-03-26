@@ -253,12 +253,10 @@ var MovableElements = function () {
             this.elementToDraw = document.createElement(tag || "" + this.elementToCreate);
             var resizeHandler = document.createElement("span");
 
-            wrapper.setAttribute("style", "position: absolute;\n        top: 100px;\n        left: 100px;\n        background-color: transparent;\n        z-index: 500;");
-
             this.elementToDraw.id = "selection";
-            this.elementToDraw.setAttribute("style", "display: inline-block;\n        border: 2px dashed #000;\n        margin: 10px;\n        padding: 0px;\n        width: 0;\n        height: 0;\n        background-color: transparent;\n        z-index: 5000;\n        resize: none;");
-
-            resizeHandler.setAttribute("style", "display: inline-block;\n        width: 20px;\n        height: 20px;\n        border: 2px dashed #000;\n        background-color: #000;\n        margin-right: -20px;\n        margin-bottom: -20px;\n        z-index: 5000;");
+            this.elementToDraw.classList.add("main-element");
+            wrapper.classList.add("wrapper");
+            resizeHandler.classList.add("resizer");
 
             wrapper.appendChild(this.elementToDraw);
             wrapper.appendChild(resizeHandler);
@@ -277,8 +275,8 @@ var MovableElements = function () {
         key: "checkPositionOfElement",
         value: function checkPositionOfElement() {
             var wrapper = this.elementToDraw.parentElement;
-            this.pleaceToDraw.x = wrapper.offsetLeft + 12; // "14" width of margin + border + padding
-            this.pleaceToDraw.y = wrapper.offsetTop + 12 - this.menuHeight;
+            this.pleaceToDraw.x = wrapper.offsetLeft + 14; // "14" width of margin + border + padding
+            this.pleaceToDraw.y = wrapper.offsetTop + 14 - this.menuHeight;
 
             return {
                 x: wrapper.offsetLeft + 12,
@@ -349,7 +347,7 @@ var MovableElements = function () {
             var cursorPositionY = void 0;
 
             this.elementToDraw.addEventListener("mousedown", function (e) {
-                // e.preventDefault();
+                if (_this3.elementToDraw.localName !== "textarea") e.preventDefault();
                 _this3.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper);
             });
         }
@@ -432,31 +430,27 @@ var _color_picker = __webpack_require__(9);
 
 var _color_picker2 = _interopRequireDefault(_color_picker);
 
-var _rect = __webpack_require__(10);
-
-var _rect2 = _interopRequireDefault(_rect);
-
-var _text = __webpack_require__(11);
+var _text = __webpack_require__(10);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _open_file = __webpack_require__(12);
+var _open_file = __webpack_require__(11);
 
 var _open_file2 = _interopRequireDefault(_open_file);
 
-var _download = __webpack_require__(13);
+var _download = __webpack_require__(12);
 
 var _download2 = _interopRequireDefault(_download);
 
-var _storage = __webpack_require__(14);
+var _storage = __webpack_require__(13);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _select = __webpack_require__(15);
+var _select = __webpack_require__(14);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _undo_redo_class = __webpack_require__(16);
+var _undo_redo_class = __webpack_require__(15);
 
 var _undo_redo_class2 = _interopRequireDefault(_undo_redo_class);
 
@@ -465,12 +459,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /////----------------	ELEMENT HANDLERS ----------------------	/////
 
 // -- menu -- //
-///// IMPORT FILES /////
+// Class of Canvas element
+
 var menu = document.querySelector(".menu");
 
 // -- canvas element -- //
-// Class of Canvas element
-
+///// IMPORT FILES /////
 var canvasElement = document.querySelector("#canvas");
 var workSpaceWidth = window.innerWidth;
 var workSpaceHeight = window.innerHeight - menu.offsetHeight;
@@ -481,13 +475,15 @@ var easerButton = menu.querySelector("#Easer");
 var colorPickerButton = menu.querySelector("#Color-Picker");
 var sprayButton = menu.querySelector("#Spray");
 var textButton = menu.querySelector("#Text");
-var rectButton = menu.querySelector("#Rect");
 
 // -- input properties -- //
 var toolColor = menu.querySelector("#color-field");
 var toolSize = menu.querySelector("#tool-size");
 
 var fontSize = menu.querySelector("#font-size");
+var fontColor = menu.querySelector("#color-font");
+var fontBold = menu.querySelector("#bold");
+var fontItalic = menu.querySelector("#italic");
 
 // -- others buttons -- //
 var save = menu.querySelector("#save");
@@ -526,21 +522,6 @@ var LoadFile = new _open_file2.default(openFile, Sketch, canvasElement, "img");
 var DrawHistory = new _undo_redo_class2.default(Sketch);
 var SelectArea = new _select2.default(copyToolSet, Sketch, canvasElement, "div");
 
-// /////////////////////////////////////////////////
-
-function changeColor() {
-	Sketch.changeProperties({ color: toolColor.value });
-}
-
-function changeToolSize() {
-	Sketch.changeProperties({ width: toolSize.value });
-}
-
-function changeFontSize() {
-	TextTool.setTextStyle({ fontSize: fontSize.value + "px" });
-	console.log(TextTool.textPropety);
-}
-
 /////----------------	TOOLSET FOR EVENT LISTENER (ENABLE / DISABLE BUTTON)   --------------------/////
 
 var toolSet = {
@@ -558,9 +539,43 @@ var toolSet = {
 	return SketchStorage.checkStorage();
 });
 
-toolSize.addEventListener("change", changeToolSize);
-toolColor.addEventListener("change", changeColor);
-fontSize.addEventListener("change", changeFontSize);
+toolSize.addEventListener("change", Sketch.changeProperties({ width: toolSize.value }));
+toolColor.addEventListener("change", Sketch.changeProperties({ color: toolColor.value }));
+
+fontSize.addEventListener("change", function () {
+	TextTool.setTextStyle({ fontSize: fontSize.value + "px" });
+	if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+});
+fontColor.addEventListener("change", function () {
+	TextTool.setTextStyle({ textColor: fontColor.value });
+	if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+});
+fontBold.addEventListener("click", function () {
+	if (fontBold.dataset.active === "false") {
+		TextTool.setTextStyle({ fontWeight: "bold" });
+		fontBold.classList.add("menu__button--active");
+		fontBold.dataset.active = "true";
+		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	} else {
+		TextTool.setTextStyle({ fontWeight: "normal" });
+		fontBold.classList.remove("menu__button--active");
+		fontBold.dataset.active = "false";
+		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	}
+});
+fontItalic.addEventListener("click", function () {
+	if (fontItalic.dataset.active === "false") {
+		TextTool.setTextStyle({ fontStyle: "italic" });
+		fontItalic.classList.add("menu__button--active");
+		fontItalic.dataset.active = "true";
+		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	} else {
+		TextTool.setTextStyle({ fontStyle: "normal" });
+		fontItalic.classList.remove("menu__button--active");
+		fontItalic.dataset.active = "false";
+		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	}
+});
 
 save.addEventListener("click", function () {
 	return SketchStorage.save();
@@ -1047,78 +1062,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _tool_class = __webpack_require__(0);
-
-var _tool_class2 = _interopRequireDefault(_tool_class);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Class of tools
-
-var Rect = new _tool_class2.default('#Rect', '../my-icons-collection/svg/001-color-picker.png');
-
-console.log(Rect);
-
-Rect.startDrawPoints = function (event, canvas) {
-    var menuHeight = window.innerHeight - canvas.canvasArea.height;
-
-    return {
-        y: event.clientY - menuHeight,
-        x: event.clientX,
-        menuHeight: menuHeight
-    };
-};
-
-Rect.loadImage = function (canvas) {
-    var history = canvas.drawHistory;
-    var stateToLoad = history[history.length - 2];
-
-    var canvasHeight = canvas.canvasArea.clientHeight;
-    var canvasWidth = canvas.canvasArea.clientWidth;
-
-    var imageObj = new Image();
-    imageObj.src = stateToLoad;
-    imageObj.onload = function () {
-        canvas.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        canvas.ctx.drawImage(imageObj, 0, 0);
-    };
-};
-
-Rect.active = function (e, test) {
-    var canvas = test;
-    canvas.unbindEvents();
-
-    console.log(canvas);
-    var canvasArea = document.querySelector("#canvas");
-    Rect.eventHandler; // created to make possiable to remove Event Listener
-
-    canvasArea.addEventListener("mousedown", function (event) {
-
-        var startPoint = Rect.startDrawPoints(event, canvas);
-        console.log(startPoint);
-        canvasArea.addEventListener("mousemove", function (e) {
-            this.loadImage(canvas);
-            canvas.ctx.rect(startPoint.x, startPoint.y, e.clientX - startPoint.x, e.clientY - startPoint.y - startPoint.menuHeight);
-            canvas.ctx.stroke();
-        }.bind(Rect));
-    });
-};
-
-Rect.inactive = function (e, canvas) {};
-
-exports.default = Rect;
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1147,8 +1090,8 @@ var TextDrawTool = function (_AdvancedTools) {
 
         _this.textPropety = {
             fontFamily: "sans-serif",
-            textColor: "#CCCCCC",
-            fontSize: "30px",
+            textColor: "#000000",
+            fontSize: "12px",
             fontStyle: "normal",
             fontWeight: "normal"
         };
@@ -1175,9 +1118,17 @@ var TextDrawTool = function (_AdvancedTools) {
             this.canvas.ctx.font = "\n            " + this.textPropety.fontStyle + "\n            " + this.textPropety.fontWeight + "\n            " + this.textPropety.fontSize + "\n            " + this.textPropety.fontFamily;
 
             this.canvas.ctx.fillStyle = this.textPropety.textColor;
-            // this.canvas.ctx.textAlign = "center";
             this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y);
             this.canvas.saveToHistory();
+        }
+    }, {
+        key: "textareaStyle",
+        value: function textareaStyle() {
+            this.elementToDraw.style.fontStyle = "" + this.textPropety.fontStyle;
+            this.elementToDraw.style.fontWeight = "" + this.textPropety.fontWeight;
+            this.elementToDraw.style.fontSize = "" + this.textPropety.fontSize;
+            this.elementToDraw.style.fontFamily = "" + this.textPropety.fontFamily;
+            this.elementToDraw.style.color = "" + this.textPropety.textColor;
         }
     }, {
         key: "bindEvents",
@@ -1227,7 +1178,7 @@ var TextDrawTool = function (_AdvancedTools) {
 exports.default = TextDrawTool;
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1335,7 +1286,7 @@ var OpenFile = function (_MovableElements) {
 exports.default = OpenFile;
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1387,7 +1338,7 @@ var DownloadCanvas = function (_OtherTools) {
 exports.default = DownloadCanvas;
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1510,7 +1461,7 @@ var CanvasStorage = function (_OtherTools) {
 exports.default = CanvasStorage;
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1594,31 +1545,47 @@ var SelectCanvasArea = function (_AdvancedTools) {
             this.canvas.ctx.clearRect(cordsToClear.x, cordsToClear.y, cordsToClear.width, cordsToClear.height);
         }
     }, {
+        key: "getImage",
+        value: function getImage(width, height) {
+            var canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            var context = canvas.getContext("2d");
+            context.putImageData(this.copyMemory, 0, 0);
+
+            return canvas.toDataURL();
+        }
+    }, {
         key: "loadCopiedImg",
         value: function loadCopiedImg() {
+
+            var image = this.getImage(this.copyMemory.width, this.copyMemory.height);
             this.createContentElement("img");
-            this.elementToDraw.src = this.copyMemory;
-
-            var imageArr = this.copyMemory.data;
-            var imageData = this.copyMemory; //Your image data array
-            var images = []; //completed images
-            var temp;
-            // for (let i = 0; i < imageArr.length; i++) { //Each block of canvas image
-            // temp += String.fromCharCode(imageArr[i])
-            // images.push("data:image/png;base64," + btoa(temp)); //Push to final array
-
-            // var encoded = generatePng(imageArr[i].width, imageArr[i].height, temp);
-            // images.push("data:image/png;base64," + btoa(encoded)); //Push to final array
-            // }
-            console.dir(images);
+            this.elementToDraw.src = image;
+            this.elementToDraw.style.width = this.copyMemory.width + "px";
+            this.elementToDraw.style.height = this.copyMemory.height + "px";
+            this.showContentElement();
         }
     }, {
         key: "pasteCopiedArea",
         value: function pasteCopiedArea() {
-            this.canvas.ctx.putImageData(this.copyMemory, 0, 0);
-            this.removeSelection();
+            var _this2 = this;
+
+            var _pasteEventHandler = void 0;
+
+            this.inactive(); // remove select tool events for a while;
             this.loadCopiedImg();
-            this.canvas.saveToHistory();
+
+            this.canvasElement.addEventListener("mousedown", _pasteEventHandler = function pasteEventHandler(e) {
+                e.preventDefault();
+                var positionToDraw = _this2.checkPositionOfElement();
+                _this2.deleteContentElement();
+                _this2.canvas.ctx.drawImage(_this2.elementToDraw, positionToDraw.x, positionToDraw.y, positionToDraw.width, positionToDraw.height);
+                _this2.canvas.saveToHistory();
+                _this2.active(); // add select tool events;
+                _this2.canvasElement.removeEventListener(e.type, _pasteEventHandler);
+            });
+            // this.canvas.saveToHistory();
         }
 
         //// ---------  EVENTS ----------- /////
@@ -1627,19 +1594,19 @@ var SelectCanvasArea = function (_AdvancedTools) {
     }, {
         key: "bindEvents",
         value: function bindEvents() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.canvasElement.addEventListener("mousedown", this.mdownEventHandler = function (e) {
 
-                if (_this2.toolIsActive) {
-                    _this2.removeSelection();
-                    _this2.toolIsActive = false;
+                if (_this3.toolIsActive) {
+                    _this3.removeSelection();
+                    _this3.toolIsActive = false;
                 } else {
-                    _this2.createContentElement();
-                    _this2.showContentElement(e);
-                    _this2.enableCopyButtons();
-                    _this2.initResizeEvent(e, _this2.elementToDraw.parentElement);
-                    _this2.toolIsActive = true;
+                    _this3.createContentElement();
+                    _this3.showContentElement(e);
+                    _this3.enableCopyButtons();
+                    _this3.initResizeEvent(e, _this3.elementToDraw.parentElement);
+                    _this3.toolIsActive = true;
                 }
             });
         }
@@ -1669,7 +1636,7 @@ var SelectCanvasArea = function (_AdvancedTools) {
 exports.default = SelectCanvasArea;
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

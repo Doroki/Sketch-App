@@ -5,7 +5,6 @@ import BrushTool from "./basic_tools/brush";
 import EaserTool from "./basic_tools/easer";
 import SprayTool from "./basic_tools/spray";  
 import ColorPickerTool from "./basic_tools/color_picker"; 
-import ReactTool from "./basic_tools/rect"; 
 import TextDrawTool from "./basic_tools/text"; 
 
 import OpenFile from "./others-buttons/open_file";
@@ -32,13 +31,15 @@ const easerButton = menu.querySelector("#Easer");
 const colorPickerButton = menu.querySelector("#Color-Picker");
 const sprayButton = menu.querySelector("#Spray");
 const textButton = menu.querySelector("#Text");
-const rectButton = menu.querySelector("#Rect");
 
 // -- input properties -- //
 const toolColor = menu.querySelector("#color-field");
 const toolSize = menu.querySelector("#tool-size");
 
 const fontSize = menu.querySelector("#font-size");
+const fontColor = menu.querySelector("#color-font");
+const fontBold = menu.querySelector("#bold");
+const fontItalic = menu.querySelector("#italic");
 
 // -- others buttons -- //
 const save = menu.querySelector("#save");
@@ -79,22 +80,6 @@ const DrawHistory = new Undo_Redo(Sketch);
 const SelectArea = new SelectCanvasArea(copyToolSet, Sketch, canvasElement, "div");
 
 
-// /////////////////////////////////////////////////
-
-function changeColor() {
-	Sketch.changeProperties({color: toolColor.value}); 
-}
-
-function changeToolSize() {
-	Sketch.changeProperties({width: toolSize.value}); 
-}
-
-function changeFontSize() {
-	TextTool.setTextStyle({fontSize: `${fontSize.value}px`})
-	console.log(TextTool.textPropety)
-}
-
-
 /////----------------	TOOLSET FOR EVENT LISTENER (ENABLE / DISABLE BUTTON)   --------------------/////
 
 const toolSet = {
@@ -111,9 +96,43 @@ const toolSet = {
 
 window.addEventListener('load', () => SketchStorage.checkStorage());
 
-toolSize.addEventListener("change", changeToolSize);
-toolColor.addEventListener("change", changeColor);
-fontSize.addEventListener("change", changeFontSize);
+toolSize.addEventListener("change", Sketch.changeProperties({width: toolSize.value}));
+toolColor.addEventListener("change", Sketch.changeProperties({color: toolColor.value}));
+
+fontSize.addEventListener("change", () => {
+	TextTool.setTextStyle({fontSize: `${fontSize.value}px`})
+	if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+});
+fontColor.addEventListener("change", () => {
+	TextTool.setTextStyle({textColor: fontColor.value})
+	if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+});
+fontBold.addEventListener("click", () => {
+	if(fontBold.dataset.active === "false") {
+		TextTool.setTextStyle({fontWeight: `bold`});
+		fontBold.classList.add("menu__button--active");
+		fontBold.dataset.active = "true";
+		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	} else {
+		TextTool.setTextStyle({fontWeight: `normal`});
+		fontBold.classList.remove("menu__button--active");
+		fontBold.dataset.active = "false";
+		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	}
+});
+fontItalic.addEventListener("click", () => {
+	if(fontItalic.dataset.active === "false") {
+		TextTool.setTextStyle({fontStyle: `italic`});
+		fontItalic.classList.add("menu__button--active");
+		fontItalic.dataset.active = "true";
+		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	} else {
+		TextTool.setTextStyle({fontStyle: `normal`});
+		fontItalic.classList.remove("menu__button--active");
+		fontItalic.dataset.active = "false";
+		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	}
+});
 
 save.addEventListener("click", () => SketchStorage.save());
 download.addEventListener("click", () => DownloadImage.downloadCanvas());

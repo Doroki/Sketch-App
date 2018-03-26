@@ -7,8 +7,8 @@ class TextDrawTool extends AdvancedTools {
 
         this.textPropety = {
             fontFamily: "sans-serif",
-            textColor: "#CCCCCC",
-            fontSize: "30px",
+            textColor: "#000000",
+            fontSize: "12px",
             fontStyle: "normal",
             fontWeight: "normal"
         }
@@ -38,9 +38,16 @@ class TextDrawTool extends AdvancedTools {
             ${this.textPropety.fontFamily}`;
 
         this.canvas.ctx.fillStyle = this.textPropety.textColor;
-        // this.canvas.ctx.textAlign = "center";
         this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y);
         this.canvas.saveToHistory();
+    }
+
+    textareaStyle() {
+        this.elementToDraw.style.fontStyle = `${this.textPropety.fontStyle}`;
+        this.elementToDraw.style.fontWeight = `${this.textPropety.fontWeight}`;
+        this.elementToDraw.style.fontSize = `${this.textPropety.fontSize}`;
+        this.elementToDraw.style.fontFamily = `${this.textPropety.fontFamily}`;
+        this.elementToDraw.style.color = `${this.textPropety.textColor}`;
     }
 
 
@@ -56,6 +63,7 @@ class TextDrawTool extends AdvancedTools {
                 this.showContentElement(e);
                 this.initResizeEvent(e, this.elementToDraw.parentElement);
                 this.toolIsActive = true;
+                
             }
         });
     }

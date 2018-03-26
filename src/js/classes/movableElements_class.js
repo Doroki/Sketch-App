@@ -41,35 +41,10 @@ class MovableElements {
         this.elementToDraw = document.createElement(tag || `${this.elementToCreate}`);
         const resizeHandler = document.createElement("span");
 
-        wrapper.setAttribute(`style`,
-        `position: absolute;
-        top: 100px;
-        left: 100px;
-        background-color: transparent;
-        z-index: 500;`);
-        
         this.elementToDraw.id = "selection";
-        this.elementToDraw.setAttribute(`style`,
-        `display: inline-block;
-        border: 2px dashed #000;
-        margin: 10px;
-        padding: 0px;
-        width: 0;
-        height: 0;
-        background-color: transparent;
-        z-index: 5000;
-        resize: none;`);
-
-
-        resizeHandler.setAttribute(`style`,
-        `display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 2px dashed #000;
-        background-color: #000;
-        margin-right: -20px;
-        margin-bottom: -20px;
-        z-index: 5000;`);
+        this.elementToDraw.classList.add("main-element");
+        wrapper.classList.add("wrapper");
+        resizeHandler.classList.add("resizer");
 
 
         wrapper.appendChild(this.elementToDraw);
@@ -87,8 +62,8 @@ class MovableElements {
 
     checkPositionOfElement() {
         const wrapper = this.elementToDraw.parentElement;
-        this.pleaceToDraw.x = wrapper.offsetLeft + 12; // "14" width of margin + border + padding
-        this.pleaceToDraw.y = wrapper.offsetTop + 12 - this.menuHeight;
+        this.pleaceToDraw.x = wrapper.offsetLeft + 14; // "14" width of margin + border + padding
+        this.pleaceToDraw.y = wrapper.offsetTop + 14 - this.menuHeight;
 
         return {
             x: wrapper.offsetLeft + 12,
@@ -145,7 +120,7 @@ class MovableElements {
         let cursorPositionY;
 
         this.elementToDraw.addEventListener("mousedown", (e) => {
-            // e.preventDefault();
+            if(this.elementToDraw.localName !== "textarea") e.preventDefault();
             this.initDragEvent(e, cursorPositionX, cursorPositionY, wrapper)
         })
     }
@@ -165,7 +140,6 @@ class MovableElements {
     }
 
     moveElement(e, x, y, element) {
-        
 
         const cursorPositionX = this.lastCursorX - e.clientX;
         const cursorPositionY = this.lastCursorY - e.clientY;

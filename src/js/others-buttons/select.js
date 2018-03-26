@@ -45,30 +45,42 @@ class SelectCanvasArea extends AdvancedTools {
         this.canvas.ctx.clearRect(cordsToClear.x, cordsToClear.y, cordsToClear.width, cordsToClear.height);
     }
 
-    loadCopiedImg() {
-        this.createContentElement("img");
-        this.elementToDraw.src = this.copyMemory;
-
-        var imageArr = this.copyMemory.data
-        var imageData = this.copyMemory; //Your image data array
-        var images = []; //completed images
-        var temp;
-        // for (let i = 0; i < imageArr.length; i++) { //Each block of canvas image
-            // temp += String.fromCharCode(imageArr[i])
-            // images.push("data:image/png;base64," + btoa(temp)); //Push to final array
-
-            // var encoded = generatePng(imageArr[i].width, imageArr[i].height, temp);
-            // images.push("data:image/png;base64," + btoa(encoded)); //Push to final array
-        // }
-        console.dir(images)
+    getImage(width, height) {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+		canvas.height = height;
+        const context = canvas.getContext("2d");
+        context.putImageData(this.copyMemory, 0, 0);
         
+        return canvas.toDataURL();
+    }
+
+    loadCopiedImg() {
+
+        const image = this.getImage(this.copyMemory.width, this.copyMemory.height)
+        this.createContentElement("img");
+        this.elementToDraw.src = image; 
+        this.elementToDraw.style.width = `${this.copyMemory.width}px`;
+        this.elementToDraw.style.height = `${this.copyMemory.height}px`;    
+        this.showContentElement();   
     }
 
     pasteCopiedArea() {
-        this.canvas.ctx.putImageData(this.copyMemory, 0, 0);
-        this.removeSelection();
+        let pasteEventHandler;
+
+        this.inactive(); // remove select tool events for a while;
         this.loadCopiedImg();
-        this.canvas.saveToHistory();
+
+        this.canvasElement.addEventListener("mousedown", pasteEventHandler = (e) => {
+            e.preventDefault();
+            const positionToDraw = this.checkPositionOfElement();
+            this.deleteContentElement();
+            this.canvas.ctx.drawImage(this.elementToDraw, positionToDraw.x, positionToDraw.y, positionToDraw.width, positionToDraw.height);
+            this.canvas.saveToHistory();
+            this.active(); // add select tool events;
+            this.canvasElement.removeEventListener(e.type, pasteEventHandler);
+        });
+        // this.canvas.saveToHistory();
     }
 
     //// ---------  EVENTS ----------- /////
