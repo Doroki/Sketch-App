@@ -1,4 +1,4 @@
-import Tool from "../classes/tool_class.js"; // Class of tools
+import Tool from "../classes/tool.js"; // Class of tools
 
 class SprayTool extends Tool {
 

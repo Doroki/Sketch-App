@@ -1,4 +1,4 @@
-import MovableElements from "../classes/movableElements_class.js";
+import MovableElements from "../classes/movableElements.js";
 
 
 class OpenFile extends MovableElements {

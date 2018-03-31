@@ -79,14 +79,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Tool = function () {
-    function Tool(elementButton, canvasObject, cursorUrl) {
-        var canvasElement = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    function Tool(elementButton, canvasObject) {
+        var canvasElement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
         _classCallCheck(this, Tool);
 
         this.element = elementButton;
         this.canvas = canvasObject;
-        this.cursorUrl = cursorUrl;
         this.canvasElement = canvasElement;
     }
 
@@ -101,7 +100,6 @@ var Tool = function () {
         value: function enableButton() {
             this.element.classList.add("menu__button--active"); // set button to active
             this.element.dataset.usage = "true";
-            document.querySelector(":root").style.setProperty("--canvas-cursor", "url(" + this.cursorUrl + "), auto"); // change cursor
         }
     }]);
 
@@ -146,9 +144,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _movableElements_class = __webpack_require__(3);
+var _movableElements = __webpack_require__(3);
 
-var _movableElements_class2 = _interopRequireDefault(_movableElements_class);
+var _movableElements2 = _interopRequireDefault(_movableElements);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -190,7 +188,7 @@ var AdvancedTool = function (_MovableElements) {
     }]);
 
     return AdvancedTool;
-}(_movableElements_class2.default);
+}(_movableElements2.default);
 
 exports.default = AdvancedTool;
 
@@ -256,7 +254,7 @@ var MovableElements = function () {
             this.elementToDraw.id = "selection";
             this.elementToDraw.classList.add("main-element");
             wrapper.classList.add("wrapper");
-            resizeHandler.classList.add("resizer");
+            resizeHandler.className = "resizer fa fa-arrows-alt";
 
             wrapper.appendChild(this.elementToDraw);
             wrapper.appendChild(resizeHandler);
@@ -275,8 +273,8 @@ var MovableElements = function () {
         key: "checkPositionOfElement",
         value: function checkPositionOfElement() {
             var wrapper = this.elementToDraw.parentElement;
-            this.pleaceToDraw.x = wrapper.offsetLeft + 14; // "14" width of margin + border + padding
-            this.pleaceToDraw.y = wrapper.offsetTop + 14 - this.menuHeight;
+            this.pleaceToDraw.x = wrapper.offsetLeft + 12; // "14" width of margin + border + padding
+            this.pleaceToDraw.y = wrapper.offsetTop + 12 - this.menuHeight;
 
             return {
                 x: wrapper.offsetLeft + 12,
@@ -410,9 +408,9 @@ exports.default = MovableElements;
 "use strict";
 
 
-var _canvas_class = __webpack_require__(5);
+var _canvas = __webpack_require__(5);
 
-var _canvas_class2 = _interopRequireDefault(_canvas_class);
+var _canvas2 = _interopRequireDefault(_canvas);
 
 var _brush = __webpack_require__(6);
 
@@ -426,17 +424,17 @@ var _spray = __webpack_require__(8);
 
 var _spray2 = _interopRequireDefault(_spray);
 
-var _color_picker = __webpack_require__(9);
+var _colorPicker = __webpack_require__(9);
 
-var _color_picker2 = _interopRequireDefault(_color_picker);
+var _colorPicker2 = _interopRequireDefault(_colorPicker);
 
 var _text = __webpack_require__(10);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _open_file = __webpack_require__(11);
+var _openFile = __webpack_require__(11);
 
-var _open_file2 = _interopRequireDefault(_open_file);
+var _openFile2 = _interopRequireDefault(_openFile);
 
 var _download = __webpack_require__(12);
 
@@ -450,9 +448,9 @@ var _select = __webpack_require__(14);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _undo_redo_class = __webpack_require__(15);
+var _undoRedo = __webpack_require__(15);
 
-var _undo_redo_class2 = _interopRequireDefault(_undo_redo_class);
+var _undoRedo2 = _interopRequireDefault(_undoRedo);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -506,20 +504,20 @@ var copyToolSet = {
 
 	/////----------------	OBJECTS ----------------------	/////
 
-};var Sketch = new _canvas_class2.default(canvasElement, workSpaceWidth, workSpaceHeight);
+};var Sketch = new _canvas2.default(canvasElement, workSpaceWidth, workSpaceHeight);
 
-var Brush = new _brush2.default(brushButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-var Easer = new _easer2.default(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-var ColorPicker = new _color_picker2.default(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
-var Spray = new _spray2.default(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+var Brush = new _brush2.default(brushButton, Sketch);
+var Easer = new _easer2.default(easerButton, Sketch);
+var ColorPicker = new _colorPicker2.default(colorPickerButton, Sketch, canvasElement);
+var Spray = new _spray2.default(sprayButton, Sketch);
 var TextTool = new _text2.default(textButton, Sketch, canvasElement, "textarea");
 // const Rect;
 
 var SketchStorage = new _storage2.default(save, Sketch, canvasElement);
 var DownloadImage = new _download2.default(download, canvasElement);
-var LoadFile = new _open_file2.default(openFile, Sketch, canvasElement, "img");
+var LoadFile = new _openFile2.default(openFile, Sketch, canvasElement, "img");
 
-var DrawHistory = new _undo_redo_class2.default(Sketch);
+var DrawHistory = new _undoRedo2.default(Sketch);
 var SelectArea = new _select2.default(copyToolSet, Sketch, canvasElement, "div");
 
 /////----------------	TOOLSET FOR EVENT LISTENER (ENABLE / DISABLE BUTTON)   --------------------/////
@@ -539,28 +537,32 @@ var toolSet = {
 	return SketchStorage.checkStorage();
 });
 
-toolSize.addEventListener("change", Sketch.changeProperties({ width: toolSize.value }));
-toolColor.addEventListener("change", Sketch.changeProperties({ color: toolColor.value }));
+toolSize.addEventListener("change", function () {
+	return Sketch.changeProperties({ width: toolSize.value });
+});
+toolColor.addEventListener("change", function () {
+	return Sketch.changeProperties({ color: toolColor.value });
+});
 
 fontSize.addEventListener("change", function () {
 	TextTool.setTextStyle({ fontSize: fontSize.value + "px" });
-	if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	if (TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 });
 fontColor.addEventListener("change", function () {
 	TextTool.setTextStyle({ textColor: fontColor.value });
-	if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	if (TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 });
 fontBold.addEventListener("click", function () {
 	if (fontBold.dataset.active === "false") {
 		TextTool.setTextStyle({ fontWeight: "bold" });
 		fontBold.classList.add("menu__button--active");
 		fontBold.dataset.active = "true";
-		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if (TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	} else {
 		TextTool.setTextStyle({ fontWeight: "normal" });
 		fontBold.classList.remove("menu__button--active");
 		fontBold.dataset.active = "false";
-		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if (TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	}
 });
 fontItalic.addEventListener("click", function () {
@@ -568,12 +570,12 @@ fontItalic.addEventListener("click", function () {
 		TextTool.setTextStyle({ fontStyle: "italic" });
 		fontItalic.classList.add("menu__button--active");
 		fontItalic.dataset.active = "true";
-		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if (TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	} else {
 		TextTool.setTextStyle({ fontStyle: "normal" });
 		fontItalic.classList.remove("menu__button--active");
 		fontItalic.dataset.active = "false";
-		if (TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if (TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	}
 });
 
@@ -584,7 +586,7 @@ download.addEventListener("click", function () {
 	return DownloadImage.downloadCanvas();
 });
 openFile.addEventListener("change", function () {
-	LoadFile.loadFile();
+	return LoadFile.loadFile();
 });
 redoButton.addEventListener("click", function () {
 	return DrawHistory.redo();
@@ -692,6 +694,7 @@ var Canvas = function () {
 		key: "changeProperties",
 		value: function changeProperties(properties) {
 			// Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
+			console.log(properties);
 			this.drawProperties = _extends({}, this.drawProperties, properties);
 		}
 	}, {
@@ -783,9 +786,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tool_class = __webpack_require__(0);
+var _tool = __webpack_require__(0);
 
-var _tool_class2 = _interopRequireDefault(_tool_class);
+var _tool2 = _interopRequireDefault(_tool);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -809,7 +812,6 @@ var BrushTool = function (_Tool) {
     _createClass(BrushTool, [{
         key: "active",
         value: function active() {
-
             var paintColor = document.querySelector("[type=color]").value;
             this.canvas.changeProperties({ color: paintColor, drawStyle: "line" });
             this.canvas.bindEvents();
@@ -822,7 +824,7 @@ var BrushTool = function (_Tool) {
     }]);
 
     return BrushTool;
-}(_tool_class2.default);
+}(_tool2.default);
 
 exports.default = BrushTool;
 
@@ -839,9 +841,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tool_class = __webpack_require__(0);
+var _tool = __webpack_require__(0);
 
-var _tool_class2 = _interopRequireDefault(_tool_class);
+var _tool2 = _interopRequireDefault(_tool);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -879,7 +881,7 @@ var EaserTool = function (_Tool) {
     }]);
 
     return EaserTool;
-}(_tool_class2.default);
+}(_tool2.default);
 
 exports.default = EaserTool;
 
@@ -896,9 +898,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tool_class = __webpack_require__(0);
+var _tool = __webpack_require__(0);
 
-var _tool_class2 = _interopRequireDefault(_tool_class);
+var _tool2 = _interopRequireDefault(_tool);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -962,7 +964,7 @@ var SprayTool = function (_Tool) {
     }]);
 
     return SprayTool;
-}(_tool_class2.default);
+}(_tool2.default);
 
 exports.default = SprayTool;
 
@@ -979,9 +981,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tool_class = __webpack_require__(0);
+var _tool = __webpack_require__(0);
 
-var _tool_class2 = _interopRequireDefault(_tool_class);
+var _tool2 = _interopRequireDefault(_tool);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1038,16 +1040,12 @@ var ColorPickerTool = function (_Tool) {
 	}, {
 		key: "inactive",
 		value: function inactive() {
-			var _this3 = this;
-
-			this.canvasElement.removeEventListener("click", function () {
-				return _this3.eventHandler();
-			});
+			this.canvasElement.removeEventListener("click", this.eventHandler);
 		}
 	}]);
 
 	return ColorPickerTool;
-}(_tool_class2.default);
+}(_tool2.default);
 
 exports.default = ColorPickerTool;
 
@@ -1117,8 +1115,9 @@ var TextDrawTool = function (_AdvancedTools) {
         value: function drawText() {
             this.canvas.ctx.font = "\n            " + this.textPropety.fontStyle + "\n            " + this.textPropety.fontWeight + "\n            " + this.textPropety.fontSize + "\n            " + this.textPropety.fontFamily;
 
+            var fontSize = parseInt(this.textPropety.fontSize);
             this.canvas.ctx.fillStyle = this.textPropety.textColor;
-            this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y);
+            this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y + fontSize);
             this.canvas.saveToHistory();
         }
     }, {
@@ -1139,12 +1138,13 @@ var TextDrawTool = function (_AdvancedTools) {
 
                 if (_this2.toolIsActive) {
                     _this2.drawText();
-                    _this2.deleteContentElement();
+                    if (_this2.elementToDraw) _this2.deleteContentElement();
                     _this2.toolIsActive = false;
                 } else {
                     _this2.createContentElement();
                     _this2.showContentElement(e);
                     _this2.initResizeEvent(e, _this2.elementToDraw.parentElement);
+                    _this2.useTextStyle();
                     _this2.toolIsActive = true;
                 }
             });
@@ -1158,14 +1158,12 @@ var TextDrawTool = function (_AdvancedTools) {
     }, {
         key: "active",
         value: function active() {
-            if (this.toolIsActive) return;
 
             this.bindEvents();
         }
     }, {
         key: "inactive",
         value: function inactive() {
-            if (this.toolIsActive) return;
             this.unbindEvents();
             this.deleteContentElement();
             this.toolIsActive = false;
@@ -1190,9 +1188,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _movableElements_class = __webpack_require__(3);
+var _movableElements = __webpack_require__(3);
 
-var _movableElements_class2 = _interopRequireDefault(_movableElements_class);
+var _movableElements2 = _interopRequireDefault(_movableElements);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1281,7 +1279,7 @@ var OpenFile = function (_MovableElements) {
     }]);
 
     return OpenFile;
-}(_movableElements_class2.default);
+}(_movableElements2.default);
 
 exports.default = OpenFile;
 
@@ -1298,9 +1296,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _otherTools_class = __webpack_require__(1);
+var _otherTools = __webpack_require__(1);
 
-var _otherTools_class2 = _interopRequireDefault(_otherTools_class);
+var _otherTools2 = _interopRequireDefault(_otherTools);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1333,7 +1331,7 @@ var DownloadCanvas = function (_OtherTools) {
     }]);
 
     return DownloadCanvas;
-}(_otherTools_class2.default);
+}(_otherTools2.default);
 
 exports.default = DownloadCanvas;
 
@@ -1350,9 +1348,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _otherTools_class = __webpack_require__(1);
+var _otherTools = __webpack_require__(1);
 
-var _otherTools_class2 = _interopRequireDefault(_otherTools_class);
+var _otherTools2 = _interopRequireDefault(_otherTools);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1456,7 +1454,7 @@ var CanvasStorage = function (_OtherTools) {
     }]);
 
     return CanvasStorage;
-}(_otherTools_class2.default);
+}(_otherTools2.default);
 
 exports.default = CanvasStorage;
 
@@ -1648,9 +1646,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _otherTools_class = __webpack_require__(1);
+var _otherTools = __webpack_require__(1);
 
-var _otherTools_class2 = _interopRequireDefault(_otherTools_class);
+var _otherTools2 = _interopRequireDefault(_otherTools);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1715,7 +1713,7 @@ var Undo_Redo = function (_OtherTools) {
     }]);
 
     return Undo_Redo;
-}(_otherTools_class2.default);
+}(_otherTools2.default);
 
 exports.default = Undo_Redo;
 

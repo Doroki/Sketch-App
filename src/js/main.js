@@ -1,18 +1,18 @@
 ///// IMPORT FILES /////
-import Canvas from "./classes/canvas_class"; // Class of Canvas element
+import Canvas from "./classes/canvas"; // Class of Canvas element
 
 import BrushTool from "./basic_tools/brush";
 import EaserTool from "./basic_tools/easer";
 import SprayTool from "./basic_tools/spray";  
-import ColorPickerTool from "./basic_tools/color_picker"; 
+import ColorPickerTool from "./basic_tools/colorPicker"; 
 import TextDrawTool from "./basic_tools/text"; 
 
-import OpenFile from "./others-buttons/open_file";
+import OpenFile from "./others-buttons/openFile";
 import DownloadCanvas from "./others-buttons/download";
 import CanvasStorage from "./others-buttons/storage";
 
 import SelectCanvasArea from "./others-buttons/select";
-import Undo_Redo from "./others-buttons/undo_redo_class"
+import Undo_Redo from "./others-buttons/undoRedo"
 
 
 /////----------------	ELEMENT HANDLERS ----------------------	/////
@@ -65,10 +65,10 @@ const copyToolSet = {
 
 const Sketch = new Canvas(canvasElement, workSpaceWidth, workSpaceHeight);
 
-const Brush = new BrushTool(brushButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-const Easer = new EaserTool(easerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
-const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, '../my-icons-collection/svg/001-color-picker.png', canvasElement);
-const Spray = new SprayTool(sprayButton, Sketch, '../my-icons-collection/svg/001-color-picker.png');
+const Brush = new BrushTool(brushButton, Sketch);
+const Easer = new EaserTool(easerButton, Sketch);
+const ColorPicker = new ColorPickerTool(colorPickerButton, Sketch, canvasElement);
+const Spray = new SprayTool(sprayButton, Sketch);
 const TextTool = new TextDrawTool(textButton, Sketch, canvasElement, "textarea");
 // const Rect;
 
@@ -96,28 +96,28 @@ const toolSet = {
 
 window.addEventListener('load', () => SketchStorage.checkStorage());
 
-toolSize.addEventListener("change", Sketch.changeProperties({width: toolSize.value}));
-toolColor.addEventListener("change", Sketch.changeProperties({color: toolColor.value}));
+toolSize.addEventListener("change", () => Sketch.changeProperties({width: toolSize.value}));
+toolColor.addEventListener("change", () => Sketch.changeProperties({color: toolColor.value}));
 
 fontSize.addEventListener("change", () => {
 	TextTool.setTextStyle({fontSize: `${fontSize.value}px`})
-	if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	if(TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 });
 fontColor.addEventListener("change", () => {
 	TextTool.setTextStyle({textColor: fontColor.value})
-	if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+	if(TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 });
 fontBold.addEventListener("click", () => {
 	if(fontBold.dataset.active === "false") {
 		TextTool.setTextStyle({fontWeight: `bold`});
 		fontBold.classList.add("menu__button--active");
 		fontBold.dataset.active = "true";
-		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if(TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	} else {
 		TextTool.setTextStyle({fontWeight: `normal`});
 		fontBold.classList.remove("menu__button--active");
 		fontBold.dataset.active = "false";
-		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if(TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	}
 });
 fontItalic.addEventListener("click", () => {
@@ -125,18 +125,18 @@ fontItalic.addEventListener("click", () => {
 		TextTool.setTextStyle({fontStyle: `italic`});
 		fontItalic.classList.add("menu__button--active");
 		fontItalic.dataset.active = "true";
-		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if(TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	} else {
 		TextTool.setTextStyle({fontStyle: `normal`});
 		fontItalic.classList.remove("menu__button--active");
 		fontItalic.dataset.active = "false";
-		if(TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
+		if(TextTool.elementToDraw && TextTool.elementToDraw.localName === "textarea") TextTool.textareaStyle();
 	}
 });
 
 save.addEventListener("click", () => SketchStorage.save());
 download.addEventListener("click", () => DownloadImage.downloadCanvas());
-openFile.addEventListener("change", function() {LoadFile.loadFile()});
+openFile.addEventListener("change", () => LoadFile.loadFile());
 redoButton.addEventListener("click", () => DrawHistory.redo());
 undoButton.addEventListener("click", () => DrawHistory.undo());
 

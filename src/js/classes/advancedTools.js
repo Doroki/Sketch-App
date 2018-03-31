@@ -1,4 +1,4 @@
-import MovableElements from "../classes/movableElements_class.js";
+import MovableElements from "../classes/movableElements.js";
 
 class AdvancedTool extends MovableElements {
     constructor(elementButton, canvasObject, canvasElement = null, elementToCreate) {

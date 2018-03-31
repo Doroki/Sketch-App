@@ -44,7 +44,7 @@ class MovableElements {
         this.elementToDraw.id = "selection";
         this.elementToDraw.classList.add("main-element");
         wrapper.classList.add("wrapper");
-        resizeHandler.classList.add("resizer");
+        resizeHandler.className = "resizer fa fa-arrows-alt";
 
 
         wrapper.appendChild(this.elementToDraw);
@@ -62,8 +62,8 @@ class MovableElements {
 
     checkPositionOfElement() {
         const wrapper = this.elementToDraw.parentElement;
-        this.pleaceToDraw.x = wrapper.offsetLeft + 14; // "14" width of margin + border + padding
-        this.pleaceToDraw.y = wrapper.offsetTop + 14 - this.menuHeight;
+        this.pleaceToDraw.x = wrapper.offsetLeft + 12; // "14" width of margin + border + padding
+        this.pleaceToDraw.y = wrapper.offsetTop + 12 - this.menuHeight;
 
         return {
             x: wrapper.offsetLeft + 12,

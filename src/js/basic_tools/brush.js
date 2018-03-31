@@ -1,9 +1,8 @@
-import Tool from "../classes/tool_class.js"; // Class of tools
+import Tool from "../classes/tool.js"; // Class of tools
 
 class BrushTool extends Tool {
 
     active() {
-
         let paintColor = document.querySelector("[type=color]").value;
         this.canvas.changeProperties({color: paintColor, drawStyle: "line"});
         this.canvas.bindEvents();

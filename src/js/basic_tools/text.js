@@ -37,8 +37,9 @@ class TextDrawTool extends AdvancedTools {
             ${this.textPropety.fontSize}
             ${this.textPropety.fontFamily}`;
 
+        let fontSize = parseInt(this.textPropety.fontSize);
         this.canvas.ctx.fillStyle = this.textPropety.textColor;
-        this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y);
+        this.canvas.ctx.fillText(this.elementToDraw.value, this.pleaceToDraw.x, this.pleaceToDraw.y + fontSize);
         this.canvas.saveToHistory();
     }
 
@@ -56,14 +57,14 @@ class TextDrawTool extends AdvancedTools {
 
             if (this.toolIsActive) {
                 this.drawText();
-                this.deleteContentElement();
+                if(this.elementToDraw) this.deleteContentElement();
                 this.toolIsActive = false;
             } else {
                 this.createContentElement();
                 this.showContentElement(e);
                 this.initResizeEvent(e, this.elementToDraw.parentElement);
+                this.useTextStyle();
                 this.toolIsActive = true;
-                
             }
         });
     }
@@ -74,13 +75,11 @@ class TextDrawTool extends AdvancedTools {
     }
 
     active() {
-        if(this.toolIsActive) return;
 
         this.bindEvents();
     }
     
     inactive() {
-        if(this.toolIsActive) return;
         this.unbindEvents();
         this.deleteContentElement();
         this.toolIsActive = false;

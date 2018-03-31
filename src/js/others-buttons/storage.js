@@ -1,4 +1,4 @@
-import OtherTools from "../classes/otherTools_class.js";
+import OtherTools from "../classes/otherTools.js";
 
 class CanvasStorage extends OtherTools {
 

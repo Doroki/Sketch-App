@@ -37,6 +37,7 @@ class Canvas {
 	}
 
 	changeProperties(properties) { // Function to change drawing properies: color, width, OBJECT AS ARGUMENT OF FUNCTION
+		console.log(properties)
 		this.drawProperties = {
 			...this.drawProperties,
 			...properties

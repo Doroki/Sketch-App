@@ -1,4 +1,4 @@
-import Tool from "../classes/tool_class.js"; // Class of tools
+import Tool from "../classes/tool.js"; // Class of tools
 
 class ColorPickerTool extends Tool {
 
@@ -34,7 +34,7 @@ class ColorPickerTool extends Tool {
 	}
 
 	inactive() {
-		this.canvasElement.removeEventListener("click", () => this.eventHandler());
+		this.canvasElement.removeEventListener("click", this.eventHandler);
 	}
 }
 
