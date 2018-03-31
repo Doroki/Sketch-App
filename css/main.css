@@ -54,9 +54,6 @@ input {
   outline: none; }
 
 /*=====  End of Reset CSS  ======*/
-:root {
-  --canvas-cursor: default; }
-
 html,
 body {
   height: 100%; }
@@ -196,9 +193,6 @@ body {
   border-radius: 5px;
   background-color: red; }
 
-.canvas {
-  cursor: var(--canvas-cursor); }
-
 .modal {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -253,8 +247,10 @@ body {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px dashed #000;
-  background-color: #000;
   margin-right: -20px;
   margin-bottom: -20px;
   z-index: 5000; }
+
+.fa-arrows-alt::before {
+  position: absolute;
+  font-size: 1.5em; }
