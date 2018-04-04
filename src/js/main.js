@@ -12,7 +12,7 @@ import DownloadCanvas from "./others-buttons/download";
 import CanvasStorage from "./others-buttons/storage";
 
 import SelectCanvasArea from "./others-buttons/select";
-import Undo_Redo from "./others-buttons/undoRedo"
+import Undo_Redo from "./others-buttons/undoRedo";
 
 
 /////----------------	ELEMENT HANDLERS ----------------------	/////
